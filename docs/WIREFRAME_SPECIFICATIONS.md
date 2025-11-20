@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document provides comprehensive wireframe specifications for three main screens of the Agora application, aligned with Flutter Material Design 3 (M3) components and the minimalist, philosophical aesthetic outlined in the project specification.
+This document provides comprehensive wireframe specifications for two main screens of the Agora application, aligned with Flutter Material Design 3 (M3) components and the minimalist, philosophical aesthetic outlined in the project specification.
 
 ---
 
@@ -48,9 +48,9 @@ This document provides comprehensive wireframe specifications for three main scr
 | Role | Hex | Usage |
 |------|-----|-------|
 | Primary | `#1E3A5F` | Primary actions, accents |
-| Primary Variant | `#2D4A6F` | Hover states, pressed |
+| Primary Container | `#2D4A6F` | Hover states, pressed |
 | Secondary | `#6B7280` | Secondary actions, icons |
-| Secondary Variant | `#9CA3AF` | Disabled states |
+| Secondary Container | `#9CA3AF` | Disabled states |
 | Accent | `#D4AF37` | Highlights, emphasis |
 | Error | `#DC2626` | Error states, validation |
 
@@ -192,35 +192,7 @@ Each philosopher should have a distinct color for visual identification:
 
 **Spacing**: `24px` below
 
-#### 3. Optional Context Field
-
-**Component**: M3 OutlinedTextField
-
-**Specifications:**
-
-- **Label**: "Additional Context (Optional)"
-  - Typography: `bodyMedium` (14px/20px)
-  - Color: `#1A1A1A` (On Surface)
-  - Position: Above field, `4px` padding
-
-- **Field**:
-  - Typography: `bodyLarge` (16px/24px)
-  - Min height: `56px` (multi-line, ~2 lines visible)
-  - Max height: `150px`
-  - Border: `1px` solid `#E5E5E5`
-  - Border (focused): `2px` solid `#1E3A5F`
-  - Border radius: `4px`
-  - Internal padding: `16px`
-  - Background: `#FFFFFF`
-
-- **Helper Text**: "Provide background or context for your question"
-  - Typography: `bodySmall` (12px/16px)
-  - Color: `#6B7280`
-  - Position: Below field, `4px` padding
-
-**Spacing**: `24px` below
-
-#### 4. Philosopher Selection Section
+#### 3. Philosopher Selection Section
 
 **Section Header:**
 
@@ -274,7 +246,7 @@ Each philosopher should have a distinct color for visual identification:
 
 **Spacing**: `16px` between cards, `24px` below section
 
-#### 5. Submit Button
+#### 4. Submit Button
 
 **Component**: M3 FilledButton
 
@@ -290,7 +262,7 @@ Each philosopher should have a distinct color for visual identification:
   - Border radius: `20px`
   - Background: `#1E3A5F` (Primary)
   - Background (disabled): `#E5E5E5` (Surface Container)
-  - Text color (disabled): `#9CA3AF` (Secondary Variant)
+  - Text color (disabled): `#9CA3AF` (Secondary Container)
   - Elevation: `1dp` (default), `0dp` (pressed)
   - Horizontal padding: `24px`
 
@@ -496,177 +468,28 @@ Each philosopher should have a distinct color for visual identification:
 
 ---
 
-## Screen 3: Philosopher Selection Screen
-
-### Philosopher Selection Layout Structure
-
-- **Container**: Scrollable grid
-- **Background**: `#FAFAFA` (Background)
-- **Padding**: `16px` on all sides
-- **Sticky action bar**: Fixed at bottom
-
-### Philosopher Selection Component Breakdown
-
-#### 1. Screen Header
-
-**Specifications:**
-
-- **Title**: "Choose Philosophers"
-  - Typography: `displaySmall` (36px/44px)
-  - Color: `#1A1A1A` (On Surface)
-  - Alignment: Left
-  - Spacing: `8px` below
-
-- **Subtitle**: "Select 2 philosophers for the debate"
-  - Typography: `bodyMedium` (14px/20px)
-  - Color: `#6B7280` (On Surface Variant)
-  - Alignment: Left
-  - Spacing: `24px` below
-
-#### 2. Philosopher Grid
-
-**Component**: M3 GridView
-
-**Specifications:**
-
-- **Cross-axis count**: 2 (mobile), 3 (tablet), 4 (desktop)
-- **Main axis spacing**: `16px`
-- **Cross axis spacing**: `16px`
-- **Child aspect ratio**: `0.75` (width:height)
-- **Padding**: `0px` (handled by container)
-
-#### 3. Philosopher Card
-
-**Component**: M3 Card (clickable)
-
-**Specifications:**
-
-- **Card** (default state):
-  - Border radius: `12px`
-  - Elevation: `1dp`
-  - Background: `#FFFFFF` (Surface)
-  - Border: `2px` solid transparent
-  - Padding: `16px`
-  - Cursor: Pointer (hover effect)
-
-- **Card** (selected state):
-  - Elevation: `4dp`
-  - Border: `2px` solid `#1E3A5F` (Primary)
-  - Background: `#F5F5F5` (Surface Variant)
-
-**Content** (vertical stack, centered):
-
-- **Avatar/Emoji**: `64px` × `64px`
-  - Border radius: `32px` (circle)
-  - Spacing: `12px` below
-
-- **Name**:
-  - Typography: `titleMedium` (16px/24px)
-  - Color: `#1A1A1A` (On Surface)
-  - Alignment: Center
-  - Spacing: `8px` below
-
-- **Tradition**:
-  - Component: M3 AssistChip
-  - Typography: `labelLarge` (14px/20px)
-  - Background: Philosopher color at 20% opacity
-  - Text color: Philosopher color
-  - Height: `28px`
-  - Alignment: Center
-  - Spacing: `8px` below
-
-- **Description**:
-  - Typography: `bodySmall` (12px/16px)
-  - Color: `#6B7280` (On Surface Variant)
-  - Alignment: Center
-  - Max lines: 2-3
-  - Line height: `16px`
-  - Spacing: `8px` below
-
-- **Selection Indicator** (when selected):
-  - Component: Checkmark icon
-  - Size: `32px` × `32px`
-  - Color: `#1E3A5F` (Primary)
-  - Position: Top-right corner, `8px` offset
-  - Background: `#FFFFFF` circle, `24px` diameter
-
-**Spacing**: `8px` between all content elements
-
-#### 4. Action Bar (Sticky Bottom)
-
-**Component**: M3 Surface with high elevation
-
-**Specifications:**
-
-- **Container**:
-  - Background: `#FFFFFF` (Surface)
-  - Elevation: `8dp`
-  - Padding: `16px` all sides
-  - Border top: `1px` solid `#E5E5E5`
-  - Min height: `72px`
-
-**Content** (horizontal layout):
-
-- **Selection Count**:
-  - Typography: `bodyMedium` (14px/20px)
-  - Color: `#6B7280` (On Surface Variant)
-  - Text: "{X} selected" (dynamic)
-  - Spacing: `16px` right
-
-- **Start Debate Button**:
-  - Component: M3 FilledButton
-  - Text: "Start Debate"
-  - Typography: `labelLarge` (14px/20px)
-  - Color: `#FFFFFF` (On Primary)
-  - Background: `#1E3A5F` (Primary)
-  - Background (disabled): `#E5E5E5` (Surface Container)
-  - Width: Flexible (fills remaining space)
-  - Height: `40px`
-  - Border radius: `20px`
-  - Disabled when < 2 selected
-
-### Philosopher Selection State Variations
-
-#### Philosopher Selection Default State
-
-- All cards in unselected state
-- Action bar shows "0 selected"
-- Button disabled
-
-#### Philosopher Selection Active State
-
-- Selected cards show border and elevation
-- Selection count updates dynamically
-- Button enabled when 2 selected
-
-#### Philosopher Selection Maximum State
-
-- Additional selections disabled (visual feedback)
-- Action bar shows "2 selected"
-- Button enabled
-
----
+**Note:** Philosopher selection is integrated into the Question Submission Screen (Screen 1). A separate philosopher selection screen is not part of the MVP.
 
 ## Responsive Breakpoints
 
 ### Mobile
 
 - **Width**: `375px` - `767px`
-- **Philosopher Selection**: 2 columns (Question Screen), 2 columns (Selection Screen)
+- **Philosopher Selection**: Horizontal scrollable list on Question Screen
 - **Content width**: Full width with `16px` padding
 - **Typography**: Standard sizes
 
 ### Tablet
 
 - **Width**: `768px` - `1023px`
-- **Philosopher Selection**: 3 columns (Question Screen), 3 columns (Selection Screen)
+- **Philosopher Selection**: 3 columns grid on Question Screen
 - **Content width**: Max `600px` centered
 - **Typography**: Standard sizes
 
 ### Desktop
 
 - **Width**: `1024px`+
-- **Philosopher Selection**: 4 columns (Question Screen), 4 columns (Selection Screen)
+- **Philosopher Selection**: 4 columns grid on Question Screen
 - **Content width**: Max `600px` centered
 - **Typography**: Standard sizes
 

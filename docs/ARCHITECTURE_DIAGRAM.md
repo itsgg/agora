@@ -18,14 +18,14 @@ graph TB
         ServerpodBackend[Serverpod Backend<br/>Dart Framework]
         
         subgraph "API Endpoints"
-            EP_Question[POST /question<br/>GET /question/:id]
-            EP_Debate[POST /debate/start<br/>GET /debate/:id<br/>GET /debate/:id/stream]
-            EP_Philosopher[GET /philosopher<br/>GET /philosopher/:id]
+            EP_Question[submitQuestion()<br/>getQuestion()]
+            EP_Debate[startDebate()<br/>getDebate()<br/>streamDebate()]
+            EP_Philosopher[listPhilosophers()<br/>getPhilosopher()]
         end
         
         subgraph "Business Logic"
             DebateGen[Debate Generation Logic<br/>Sequential Turn-based]
-            StreamingService[Streaming Service<br/>SSE/WebSocket]
+            StreamingService[Streaming Service<br/>Serverpod Native SSE]
         end
         
         subgraph "Data Models"
@@ -61,7 +61,7 @@ graph TB
     ServerpodClient -->|5. Get Philosophers| EP_Philosopher
 
     %% Client to Backend - Real-time Streaming
-    ServerpodClient -->|6. Stream Arguments<br/>SSE/WebSocket| StreamingService
+    ServerpodClient -->|6. Stream Arguments<br/>Serverpod Native SSE| StreamingService
     StreamingService --> EP_Debate
 
     %% Backend Internal Flow
@@ -111,7 +111,7 @@ sequenceDiagram
 
     User->>Flutter: Enter Question
     Flutter->>Flutter: Validate (10-500 chars)
-    Flutter->>Serverpod: POST /question
+    Flutter->>Serverpod: submitQuestion(text)
     Serverpod->>DB: Save Question (status: pending)
     DB-->>Serverpod: Question ID
     Serverpod-->>Flutter: Question Object
@@ -127,12 +127,12 @@ sequenceDiagram
     participant OpenRouter as OpenRouter API
     participant DB as PostgreSQL
 
-    Flutter->>Serverpod: POST /debate/start (questionId)
+    Flutter->>Serverpod: startDebate(questionId, philosopherIds)
     Serverpod->>DB: Create Debate Record
     Serverpod->>DB: Load Philosophers (2)
     Serverpod-->>Flutter: Debate ID
     
-    Flutter->>Serverpod: GET /debate/:id/stream (SSE/WebSocket)
+    Flutter->>Serverpod: streamDebate(debateId) - Serverpod Native SSE
     
     loop For Each Round (3-4 rounds)
         loop For Each Philosopher
@@ -156,7 +156,7 @@ graph LR
     end
     
     subgraph "Serverpod Backend"
-        StreamHandler[Stream Handler<br/>SSE/WebSocket]
+        StreamHandler[Stream Handler<br/>Serverpod Native SSE]
         TokenParser[Token Parser<br/>Parse SSE Events]
         Buffer[Argument Buffer]
     end
@@ -185,9 +185,9 @@ graph LR
 
 ### Serverpod Backend Components
 
-- **API Endpoints**: RESTful endpoints for questions, debates, philosophers
+- **API Endpoints**: Type-safe method-based endpoints for questions, debates, philosophers
 - **Debate Generation Logic**: Sequential turn-based generation, maintains conversation context
-- **Streaming Service**: Server-Sent Events (SSE) or WebSocket for real-time updates
+- **Streaming Service**: Serverpod native streaming (SSE) for real-time updates
 - **Data Models**: Type-safe models with Serverpod ORM
 
 ### AI Services
@@ -206,7 +206,7 @@ graph LR
 
 1. **Question Submission**: Flutter → Serverpod → PostgreSQL
 2. **Debate Initiation**: Flutter → Serverpod → PostgreSQL (create debate)
-3. **Real-time Streaming**: OpenRouter → Serverpod → Flutter (SSE/WebSocket)
+3. **Real-time Streaming**: OpenRouter → Serverpod → Flutter (Serverpod Native SSE)
 4. **Data Persistence**: Serverpod → PostgreSQL (save arguments as they complete)
 5. **Philosopher Management**: Flutter → Serverpod → PostgreSQL (load philosopher data)
 
@@ -216,5 +216,5 @@ graph LR
 - **Backend**: Serverpod (Dart) - Type-safe backend framework
 - **AI**: OpenRouter API - AutoRouter model with streaming
 - **Database**: PostgreSQL on Digital Ocean
-- **Streaming**: Server-Sent Events (SSE) or WebSocket
+- **Streaming**: Serverpod native streaming (SSE)
 - **State Management**: Provider, Riverpod, or Bloc

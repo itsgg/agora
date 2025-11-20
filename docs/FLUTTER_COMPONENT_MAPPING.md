@@ -97,35 +97,6 @@ Row(
 
 ---
 
-### Optional Context Field
-
-**Wireframe Element**: Optional multi-line text input
-
-**Flutter Implementation**:
-
-```dart
-TextField(
-  maxLines: 2,
-  minLines: 2,
-  maxLength: null, // No limit for context
-  decoration: InputDecoration(
-    labelText: 'Additional Context (Optional)',
-    helperText: 'Provide background or context for your question',
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(4),
-    ),
-  ),
-  style: Theme.of(context).textTheme.bodyLarge,
-)
-```
-
-**M3 Components**:
-
-- `TextField` widget
-- `InputDecoration` with `OutlineInputBorder`
-
----
-
 ### Philosopher Selection Section
 
 **Wireframe Element**: Horizontal scrollable list or grid of philosopher cards
@@ -193,46 +164,50 @@ class _PhilosopherSelectionCard extends StatelessWidget {
             width: 2,
           ),
         ),
-        child: Container(
-          width: 140,
-          padding: EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                philosopher.avatar,
-                style: TextStyle(fontSize: 48),
-              ),
-              SizedBox(height: 8),
-              Text(
-                philosopher.name,
-                style: Theme.of(context).textTheme.bodyLarge,
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 8),
-              Chip(
-                label: Text(
-                  philosopher.tradition,
-                  style: Theme.of(context).textTheme.labelMedium,
-                ),
-                backgroundColor: _getPhilosopherColor(philosopher.color)
-                  .withOpacity(0.2),
-                labelStyle: TextStyle(
-                  color: _getPhilosopherColor(philosopher.color),
-                ),
-              ),
-              if (isSelected)
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child: Icon(
-                    Icons.check_circle,
-                    color: Theme.of(context).colorScheme.primary,
-                    size: 24,
+        child: Stack(
+          children: [
+            Container(
+              width: 140,
+              padding: EdgeInsets.all(16),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    philosopher.avatar,
+                    style: TextStyle(fontSize: 48),
                   ),
+                  SizedBox(height: 8),
+                  Text(
+                    philosopher.name,
+                    style: Theme.of(context).textTheme.bodyLarge,
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 8),
+                  Chip(
+                    label: Text(
+                      philosopher.tradition,
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ),
+                    backgroundColor: _getPhilosopherColor(philosopher.color)
+                      .withOpacity(0.2),
+                    labelStyle: TextStyle(
+                      color: _getPhilosopherColor(philosopher.color),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (isSelected)
+              Positioned(
+                top: 8,
+                right: 8,
+                child: Icon(
+                  Icons.check_circle,
+                  color: Theme.of(context).colorScheme.primary,
+                  size: 24,
                 ),
-            ],
-          ),
+              ),
+          ],
         ),
       ),
     );
@@ -478,26 +453,77 @@ class _ArgumentCard extends StatelessWidget {
 - `TextTheme.bodyLarge` for argument text
 - `TextTheme.labelSmall` for timestamp
 
-**Streaming Text Animation**:
+**Streaming Text Animation with Serverpod**:
 
 ```dart
 class StreamingText extends StatefulWidget {
-  final String text;
-  final bool isStreaming;
+  final Stream<Argument> argumentStream;
+  final int argumentId;
 
   @override
   _StreamingTextState createState() => _StreamingTextState();
 }
 
 class _StreamingTextState extends State<StreamingText> {
+  String _currentText = '';
+  bool _isStreaming = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _listenToStream();
+  }
+
+  void _listenToStream() {
+    widget.argumentStream.listen(
+      (argument) {
+        if (argument.id == widget.argumentId) {
+          setState(() {
+            _currentText = argument.content;
+            _isStreaming = argument.isStreaming ?? false;
+          });
+        }
+      },
+      onError: (error) {
+        // Handle streaming errors
+        setState(() {
+          _isStreaming = false;
+        });
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Text(
-      widget.text + (widget.isStreaming ? '...' : ''),
+      _currentText + (_isStreaming ? '...' : ''),
       style: Theme.of(context).textTheme.bodyLarge,
     );
   }
 }
+```
+
+**Serverpod Streaming Client Usage**:
+
+```dart
+// In your debate service or state management
+Stream<Argument> streamDebate(int debateId) {
+  return client.debate.streamDebate(debateId);
+}
+
+// Usage in widget
+StreamBuilder<Argument>(
+  stream: debateService.streamDebate(debateId),
+  builder: (context, snapshot) {
+    if (snapshot.hasData) {
+      return StreamingText(
+        argumentStream: debateService.streamDebate(debateId),
+        argumentId: snapshot.data!.id!,
+      );
+    }
+    return CircularProgressIndicator();
+  },
+)
 ```
 
 ---
@@ -516,7 +542,7 @@ class _ThinkingIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 0,
-      color: Theme.of(context).colorScheme.surfaceContainer,
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
@@ -553,250 +579,13 @@ class _ThinkingIndicator extends StatelessWidget {
 **M3 Components**:
 
 - `Card` widget with `elevation: 0`
-- `ColorScheme.surfaceContainer` for background
+- `ColorScheme.surfaceContainerHighest` for background
 - `CircularProgressIndicator` for loading animation
 - `TextTheme.bodyMedium` with italic style
 
 ---
 
-## Screen 3: Philosopher Selection Screen
-
-### Screen Header
-
-**Wireframe Element**: Title and subtitle
-
-**Flutter Implementation**:
-
-```dart
-Column(
-  crossAxisAlignment: CrossAxisAlignment.start,
-  children: [
-    Text(
-      'Choose Philosophers',
-      style: Theme.of(context).textTheme.displaySmall,
-    ),
-    SizedBox(height: 8),
-    Text(
-      'Select 2 philosophers for the debate',
-      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-        color: Theme.of(context).colorScheme.onSurfaceVariant,
-      ),
-    ),
-  ],
-)
-```
-
-**M3 Components**:
-
-- `TextTheme.displaySmall` for title
-- `TextTheme.bodyMedium` for subtitle
-
----
-
-### Philosopher Grid
-
-**Wireframe Element**: Responsive grid of philosopher cards
-
-**Flutter Implementation**:
-
-```dart
-LayoutBuilder(
-  builder: (context, constraints) {
-    final crossAxisCount = constraints.maxWidth > 1024 
-      ? 4 
-      : constraints.maxWidth > 768 
-        ? 3 
-        : 2;
-    
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: crossAxisCount,
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 16,
-        childAspectRatio: 0.75,
-      ),
-      padding: EdgeInsets.all(16),
-      itemCount: philosophers.length,
-      itemBuilder: (context, index) {
-        return _PhilosopherGridCard(
-          philosopher: philosophers[index],
-          isSelected: selectedPhilosophers.contains(philosophers[index].id),
-          onTap: () => _togglePhilosopher(philosophers[index].id),
-        );
-      },
-    );
-  },
-)
-```
-
-**M3 Components**:
-
-- `GridView.builder` with `SliverGridDelegateWithFixedCrossAxisCount`
-- Responsive cross-axis count based on screen width
-
----
-
-### Philosopher Grid Card
-
-**Wireframe Element**: Large card with philosopher details
-
-**Flutter Implementation**:
-
-```dart
-class _PhilosopherGridCard extends StatelessWidget {
-  final Philosopher philosopher;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Card(
-        elevation: isSelected ? 4 : 1,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          side: BorderSide(
-            color: isSelected
-              ? Theme.of(context).colorScheme.primary
-              : Colors.transparent,
-            width: 2,
-          ),
-        ),
-        child: Stack(
-          children: [
-            Padding(
-              padding: EdgeInsets.all(16),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    philosopher.avatar,
-                    style: TextStyle(fontSize: 64),
-                  ),
-                  SizedBox(height: 12),
-                  Text(
-                    philosopher.name,
-                    style: Theme.of(context).textTheme.titleMedium,
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 8),
-                  Chip(
-                    label: Text(
-                      philosopher.tradition,
-                      style: Theme.of(context).textTheme.labelLarge,
-                    ),
-                    backgroundColor: _getPhilosopherColor(philosopher.color)
-                      .withOpacity(0.2),
-                    labelStyle: TextStyle(
-                      color: _getPhilosopherColor(philosopher.color),
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    philosopher.description,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                    textAlign: TextAlign.center,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            ),
-            if (isSelected)
-              Positioned(
-                top: 8,
-                right: 8,
-                child: Container(
-                  width: 24,
-                  height: 24,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.check,
-                    color: Theme.of(context).colorScheme.onPrimary,
-                    size: 16,
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-```
-
-**M3 Components**:
-
-- `Card` widget with conditional elevation
-- `RoundedRectangleBorder` with conditional border
-- `Chip` for tradition badge
-- `Stack` for selection indicator overlay
-
----
-
-### Action Bar
-
-**Wireframe Element**: Sticky bottom bar with selection count and button
-
-**Flutter Implementation**:
-
-```dart
-Container(
-  decoration: BoxDecoration(
-    color: Theme.of(context).colorScheme.surface,
-    boxShadow: [
-      BoxShadow(
-        color: Colors.black.withOpacity(0.1),
-        blurRadius: 8,
-        offset: Offset(0, -2),
-      ),
-    ],
-  ),
-  padding: EdgeInsets.all(16),
-  child: SafeArea(
-    child: Row(
-      children: [
-        Text(
-          '${selectedPhilosophers.length} selected',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
-        ),
-        SizedBox(width: 16),
-        Expanded(
-          child: FilledButton(
-            onPressed: selectedPhilosophers.length == 2 
-              ? _startDebate 
-              : null,
-            style: FilledButton.styleFrom(
-              minimumSize: Size(double.infinity, 40),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-            ),
-            child: Text(
-              'Start Debate',
-              style: Theme.of(context).textTheme.labelLarge,
-            ),
-          ),
-        ),
-      ],
-    ),
-  ),
-)
-```
-
-**M3 Components**:
-
-- `Container` with `BoxShadow` for elevation effect
-- `FilledButton` for primary action
-- `SafeArea` for bottom padding on mobile devices
+**Note:** Philosopher selection is integrated into the Question Submission Screen. A separate philosopher selection screen is not part of the MVP.
 
 ---
 
@@ -809,14 +598,17 @@ Container(
 ```dart
 ThemeData(
   useMaterial3: true,
-  colorScheme: ColorScheme(
+  colorScheme: ColorScheme.fromSeed(
+    seedColor: Color(0xFF1E3A5F),
+    brightness: Brightness.light,
+  ).copyWith(
     primary: Color(0xFF1E3A5F),
-    primaryVariant: Color(0xFF2D4A6F),
+    primaryContainer: Color(0xFF2D4A6F),
     secondary: Color(0xFF6B7280),
-    secondaryVariant: Color(0xFF9CA3AF),
+    secondaryContainer: Color(0xFF9CA3AF),
     surface: Color(0xFFFFFFFF),
     surfaceVariant: Color(0xFFF5F5F5),
-    surfaceContainer: Color(0xFFE5E5E5),
+    surfaceContainerHighest: Color(0xFFE5E5E5),
     background: Color(0xFFFAFAFA),
     error: Color(0xFFDC2626),
     onPrimary: Color(0xFFFFFFFF),
@@ -824,7 +616,6 @@ ThemeData(
     onSurface: Color(0xFF1A1A1A),
     onSurfaceVariant: Color(0xFF6B7280),
     onError: Color(0xFFFFFFFF),
-    brightness: Brightness.light,
   ),
   textTheme: TextTheme(
     displayLarge: TextStyle(
@@ -971,7 +762,6 @@ Future<void> _submitQuestion() async {
   try {
     await debateService.startDebate(
       question: _questionController.text,
-      context: _contextController.text,
       philosopherIds: selectedPhilosophers,
     );
   } finally {

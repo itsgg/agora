@@ -21,11 +21,12 @@ This guide provides step-by-step instructions for creating Figma wireframes from
 
 ### 1.2 Create Pages
 
-Create three pages:
+Create two pages:
 
 - `01 - Question Submission`
 - `02 - Debate Viewing`
-- `03 - Philosopher Selection`
+
+**Note:** Philosopher selection is integrated into the Question Submission screen.
 
 ### 1.3 Set Up Frames
 
@@ -385,14 +386,7 @@ Create a reference frame with spacing guides:
 4. Add character counter (right-aligned, `Body Small`, `On Surface Variant`)
 5. Spacing: `24px` below
 
-### 4.5 Add Context Field
-
-1. Use `TextField - Outlined` component
-2. Label: "Additional Context (Optional)"
-3. Helper text: "Provide background or context for your question"
-4. Spacing: `24px` below
-
-### 4.6 Add Philosopher Selection Section
+### 4.5 Add Philosopher Selection Section
 
 1. Create a frame: `Philosopher Selection`
 2. Auto-layout: Vertical
@@ -412,14 +406,14 @@ Create a reference frame with spacing guides:
 3. Spacing: `16px` between cards
 4. Show 2-4 philosopher cards as examples
 
-### 4.7 Add Submit Button
+### 4.6 Add Submit Button
 
 1. Use `Button - Filled` component
 2. Text: "Start Debate"
 3. Width: Full width (mobile) or auto (desktop)
 4. Spacing: `32px` above
 
-### 4.8 Create State Variants
+### 4.7 Create State Variants
 
 Create separate frames or use component variants for:
 
@@ -487,64 +481,7 @@ Create separate frames or use component variants for:
 
 ---
 
-## Step 6: Build Screen 3 - Philosopher Selection
-
-### 6.1 Set Up Frame
-
-1. Select the mobile frame
-2. Set background color to `Background`
-
-### 6.2 Create Screen Header
-
-1. Create a frame: `Screen Header`
-2. Auto-layout: Vertical
-3. Spacing: `8px` between title and subtitle
-
-**Title:**
-
-- Text: "Choose Philosophers"
-- Style: `Display Small`
-- Color: `On Surface`
-
-**Subtitle:**
-
-- Text: "Select 2 philosophers for the debate"
-- Style: `Body Medium`
-- Color: `On Surface Variant`
-- Spacing: `24px` below
-
-### 6.3 Create Philosopher Grid
-
-1. Create a frame: `Philosopher Grid`
-2. Use Grid layout (2 columns mobile, 3-4 desktop)
-3. Spacing: `16px` both axes
-
-### 6.4 Create Philosopher Cards
-
-1. Use `Card` component as base
-2. Structure (vertical auto-layout, centered):
-   - Avatar (`64px` circle)
-   - Name (`Title Medium`)
-   - Tradition Chip (`Chip - Assist`)
-   - Description (`Body Small`, 2-3 lines, centered)
-   - Selection indicator (checkmark, top-right when selected)
-
-3. Create 6-7 example philosopher cards
-4. Show 2 in selected state
-
-### 6.5 Create Action Bar
-
-1. Create a frame: `Action Bar`
-2. Position: Fixed at bottom (use constraints)
-3. Background: `Surface`
-4. Elevation: `8dp` shadow
-5. Border top: `1px` solid `#E5E5E5`
-6. Padding: `16px` all sides
-
-**Content** (horizontal auto-layout):
-
-- Selection count: "{X} selected" (`Body Medium`, `On Surface Variant`)
-- Start Debate button: `Button - Filled`, full width
+**Note:** Philosopher selection is integrated into the Question Submission Screen (Screen 1). A separate philosopher selection screen is not part of the MVP.
 
 ---
 
@@ -558,8 +495,7 @@ Create separate frames or use component variants for:
 
 ### 7.2 Adjust Layouts
 
-- **Question Submission**: Center content, max width `600px`
-- **Philosopher Selection**: Increase grid columns (3 tablet, 4 desktop)
+- **Question Submission**: Center content, max width `600px`, philosopher selection adapts to screen size
 - **Debate Viewing**: Increase max content width, adjust card sizes
 
 ### 7.3 Test Breakpoints

@@ -5,8 +5,7 @@
 ### 1. Project Overview
 
 **Project Name:** Agora  
-**Version:** 1.0 (MVP - Demo)  
-**Last Updated:** 2024
+**Version:** 1.0 (MVP - Demo)
 
 **Project Type:** Demo application for presentation session
 
@@ -74,7 +73,7 @@ Agora is an interactive platform where users can pose philosophical questions an
 
 ##### FR-2: AI Philosopher System
 
-- **2 philosophers per debate** (configurable in settings/config)
+- **2 philosophers per debate** (selected on question submission screen)
 - Each philosopher has:
   - Unique name and persona
   - Philosophical tradition/style (e.g., Stoic, Existentialist, Utilitarian, Virtue Ethics)
@@ -82,7 +81,7 @@ Agora is an interactive platform where users can pose philosophical questions an
   - System prompt that defines their approach
 - Philosophers take turns presenting arguments
 - Each philosopher responds to previous arguments (not just the question)
-- Configurable number of participants (default: 2, can be adjusted)
+- Users select 2 philosophers from available options on the question submission screen
 
 ##### FR-3: Real-time Debate Generation
 
@@ -95,7 +94,7 @@ Agora is an interactive platform where users can pose philosophical questions an
   - Maintain character consistency
   - Be substantive (minimum length, avoid generic responses)
 - Support for multiple rounds (e.g., opening statements, rebuttals, closing)
-- Server-Sent Events (SSE) or WebSocket for streaming
+- Serverpod native streaming (SSE) for real-time updates
 
 ##### FR-4: Debate Display
 
@@ -154,8 +153,8 @@ PostgreSQL Database (Digital Ocean)
 **Backend:**
 
 - **Serverpod** - Dart backend framework
-- RESTful API endpoints
-- Server-Sent Events (SSE) or WebSocket for real-time streaming
+- Type-safe API endpoints (method-based, not REST paths)
+- Serverpod native streaming (SSE) for real-time updates
 - Built-in database ORM
 
 **AI Integration:**
@@ -196,12 +195,12 @@ class Debate {
   int? id;
   int questionId;
   List<int> philosopherIds; // 2 philosophers for MVP
-  List<Argument> arguments;
   DebateStatus status; // generating, completed, failed
   DateTime createdAt;
   DateTime? completedAt;
   int rounds;
   int? totalTokens;
+  // Arguments are loaded via relationship, not embedded
 }
 ```
 
@@ -224,7 +223,7 @@ class Argument {
 
 ```dart
 class Philosopher {
-  int id;
+  int? id;
   String name;
   String tradition; // e.g., "Stoic", "Existentialist"
   String description;
@@ -238,22 +237,22 @@ class Philosopher {
 
 **Question Management:**
 
-- `POST /question` - Submit a new question (returns Question)
-- `GET /question/:id` - Get question details
+- `submitQuestion(String text)` - Submit a new question (returns Question)
+- `getQuestion(int id)` - Get question details
 
 **Debate Management:**
 
-- `POST /debate/start` - Start a new debate for a question (returns Debate)
-- `GET /debate/:id` - Get debate details
-- `GET /debate/:id/stream` - Stream debate generation (SSE/WebSocket)
+- `startDebate(int questionId, List<int> philosopherIds)` - Start a new debate for a question (returns Debate)
+- `getDebate(int id)` - Get debate details
+- `streamDebate(int id)` - Stream debate generation using Serverpod native streaming (SSE)
   - Streams Argument objects as they are generated
 
 **Philosopher Management:**
 
-- `GET /philosopher` - List available philosophers
-- `GET /philosopher/:id` - Get philosopher details
+- `listPhilosophers()` - List available philosophers
+- `getPhilosopher(int id)` - Get philosopher details
 
-**Note:** Serverpod uses code generation for type-safe endpoints. Endpoints will be defined as methods in Serverpod endpoint classes.
+**Note:** Serverpod uses code generation for type-safe endpoints. Endpoints are defined as methods in Serverpod endpoint classes, not REST paths. The client uses generated methods for type-safe API calls.
 
 ---
 
@@ -266,6 +265,7 @@ class Philosopher {
 - App title/logo ("Agora")
 - Brief description
 - Question input form (prominent text field)
+- Philosopher selection (select 2 philosophers from available options)
 - Submit button
 - Loading indicator when processing
 
@@ -281,11 +281,6 @@ class Philosopher {
 - Auto-scroll to latest argument
 - Loading/thinking indicators when philosophers are generating
 - "New Question" button to start over
-
-**Settings/Configuration Screen (Optional for MVP):**
-
-- Number of philosophers selector (default: 2)
-- Philosopher selection (if multiple available)
 
 #### 5.2 Design Principles
 
@@ -344,10 +339,11 @@ When debating, you:
 **Implementation Details:**
 
 - Use OpenRouter API streaming endpoint
-- Serverpod handles streaming via SSE or WebSocket
-- Flutter app receives streamed tokens and updates UI in real-time
+- Serverpod handles streaming via native SSE (Server-Sent Events)
+- Flutter app receives streamed tokens through Serverpod client and updates UI in real-time
 - Each philosopher maintains conversation context (all previous arguments)
 - Arguments are saved to database as they complete
+- Error handling: Retry logic for connection drops, timeout handling for stalled streams
 
 #### 6.3 Quality Control
 
@@ -356,6 +352,8 @@ When debating, you:
 - **Consistency Checks:** Verify philosopher maintains character through system prompts
 - **Error Handling:** Retry logic (max 2 retries), fallback responses if API fails
 - **Streaming Reliability:** Handle connection drops, resume streaming if possible
+- **Timeout Handling:** Debate generation timeout (e.g., 5 minutes), abort and mark as failed if exceeded
+- **Connection Recovery:** Automatic reconnection for dropped SSE connections, resume from last received argument
 
 ---
 
@@ -390,45 +388,6 @@ When debating, you:
 - Retry logic for AI API calls
 - Monitoring and logging
 - Backup and recovery procedures
-
----
-
-### 8. Development Phases (MVP Focus)
-
-#### Phase 1: Core Setup (Week 1)
-
-- Set up Flutter project structure
-- Set up Serverpod backend project
-- Configure PostgreSQL database on Digital Ocean
-- Set up OpenRouter API integration
-- Basic project structure and dependencies
-
-#### Phase 2: Backend Development (Week 1-2)
-
-- Create Serverpod models (Question, Debate, Argument, Philosopher)
-- Implement philosopher system prompts (2 philosophers)
-- Create debate generation endpoint with OpenRouter streaming
-- Implement real-time streaming (SSE/WebSocket)
-- Database schema and migrations
-
-#### Phase 3: Frontend Development (Week 2-3)
-
-- Question input screen
-- Debate view with real-time streaming
-- Philosopher cards/UI components
-- State management for streaming updates
-- Auto-scroll and loading states
-- Cross-platform testing (Web, Mobile)
-
-#### Phase 4: Integration & Polish (Week 3-4)
-
-- Connect frontend to backend
-- Test real-time streaming end-to-end
-- UI/UX polish and animations
-- Error handling and edge cases
-- Demo preparation and testing
-
-**Total Timeline:** 3-4 weeks for MVP demo
 
 ---
 
@@ -487,8 +446,7 @@ When debating, you:
 
 1. **Debate Length:** How many rounds? (Recommended: 3-4 rounds for demo)
 2. **Philosopher Selection:** Which 2 philosophers for initial demo? (See Appendix A)
-3. **Philosopher Configuration:** User-selectable or random assignment?
-4. **Streaming Method:** SSE or WebSocket? (Serverpod supports both)
+3. **Streaming Method:** ✅ Serverpod native streaming (SSE) - Selected
 
 ---
 
@@ -504,7 +462,7 @@ When debating, you:
    - Configure OpenRouter API keys
    - Set up project structure
 5. **Create initial philosopher prompts** (2 philosophers for MVP)
-6. **Develop MVP** following Phase 1-4 plan
+6. **Develop MVP** following implementation plan
 7. **Test and prepare for demo presentation**
 
 ---
@@ -579,6 +537,6 @@ When debating, you:
 
 **Streaming Implementation:**
 
-- Use Server-Sent Events (SSE) or WebSocket
-- Parse streaming JSON responses
-- Update Flutter UI in real-time as tokens arrive
+- Use Serverpod native streaming (SSE - Server-Sent Events)
+- Serverpod client handles SSE connection and parsing
+- Update Flutter UI in real-time as tokens arrive through Serverpod stream
