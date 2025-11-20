@@ -27,14 +27,12 @@
     {
       "id": "setup-02",
       "title": "Initialize Serverpod Backend Project",
-      "description": "Create Serverpod backend project structure in the 'backend' folder. Run 'serverpod create agora' (or similar), then reorganize the generated structure: move server to 'backend' folder, update package names in pubspec.yaml files (server, client, and Flutter app) to use 'com.itsgg.agora' format, and set app name to 'Agora'. Configure Serverpod framework, set up basic endpoint structure, and configure development server.",
+      "description": "Create Serverpod backend project structure in the 'backend' folder. Run 'serverpod create agora' (or similar), then reorganize the generated structure: move server to 'backend' folder. Configure Serverpod framework, set up basic endpoint structure, and configure development server.",
       "phase": 1,
       "dependencies": [],
       "status": "pending",
       "acceptanceCriteria": [
         "Serverpod project created and reorganized into 'backend' folder structure",
-        "Package names configured as 'com.itsgg.agora' in server, client, and Flutter app pubspec.yaml files",
-        "App name set to 'Agora' in Flutter app configuration",
         "Serverpod project runs locally",
         "Basic endpoint structure in place",
         "Serverpod code generation working"
