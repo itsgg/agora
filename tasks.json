@@ -11,35 +11,23 @@
   "tasks": [
     {
       "id": "setup-01",
-      "title": "Initialize Flutter Project",
-      "description": "Create new Flutter project in the 'app' folder with cross-platform support (Web, iOS, Android, Desktop). Use package name 'com.itsgg.agora' and app name 'Agora'. Set up basic project structure, dependencies, and configuration files.",
-      "phase": 1,
-      "dependencies": [],
-      "status": "completed",
-      "acceptanceCriteria": [
-        "Flutter project created in 'app' folder and runs on at least one platform",
-        "Package name set to 'com.itsgg.agora'",
-        "App name set to 'Agora'",
-        "Project structure follows Flutter best practices",
-        "Basic dependencies configured"
-      ]
-    },
-    {
-      "id": "setup-02",
-      "title": "Initialize Serverpod Backend Project",
-      "description": "Create Serverpod backend project structure in the 'backend' folder. Run 'serverpod create agora' (or similar), then reorganize the generated structure: move server to 'backend' folder. Configure Serverpod framework, set up basic endpoint structure, and configure development server.",
+      "title": "Initialize Serverpod Project",
+      "description": "Create Serverpod project in the root directory using `serverpod create`. Serverpod will generate three packages: server (backend code), client (client package), and Flutter app. Use the generated Flutter app as the main application. Configure Serverpod framework, set up basic endpoint structure, and configure development server. Customize the generated Flutter app with package name 'com.itsgg.agora' and app name 'Agora'.",
       "phase": 1,
       "dependencies": [],
       "status": "pending",
       "acceptanceCriteria": [
-        "Serverpod project created and reorganized into 'backend' folder structure",
+        "Serverpod project created in root directory",
+        "Three packages generated: server, client, and Flutter app",
         "Serverpod project runs locally",
         "Basic endpoint structure in place",
-        "Serverpod code generation working"
+        "Serverpod code generation working",
+        "Generated Flutter app configured with package name 'com.itsgg.agora' and app name 'Agora'",
+        "Basic unit tests pass for project structure"
       ]
     },
     {
-      "id": "setup-03",
+      "id": "setup-02",
       "title": "Configure PostgreSQL Database on Digital Ocean",
       "description": "Set up PostgreSQL database instance on Digital Ocean. Create database, configure connection settings, and set up basic security.",
       "phase": 1,
@@ -48,46 +36,111 @@
       "acceptanceCriteria": [
         "PostgreSQL database created and accessible",
         "Connection credentials secured",
-        "Database accessible from Serverpod backend"
+        "Database accessible from Serverpod backend",
+        "Database connection tested successfully"
       ]
     },
     {
-      "id": "setup-04",
+      "id": "setup-03",
       "title": "Configure Serverpod Database Connection",
       "description": "Connect Serverpod backend to PostgreSQL database. Configure database connection in Serverpod config files and test connectivity.",
       "phase": 1,
-      "dependencies": ["setup-02", "setup-03"],
+      "dependencies": [
+        "setup-01",
+        "setup-02"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
         "Serverpod can connect to PostgreSQL database",
         "Database connection tested and verified",
-        "Connection settings properly configured"
+        "Connection settings properly configured",
+        "Connection test passes with success response"
       ]
     },
     {
-      "id": "setup-05",
+      "id": "setup-04",
       "title": "Set Up OpenRouter API Integration",
       "description": "Configure OpenRouter API access. Set up API key management, create service class for OpenRouter API calls, and test basic API connectivity.",
       "phase": 1,
-      "dependencies": ["setup-02"],
+      "dependencies": [
+        "setup-01"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
         "OpenRouter API key configured securely (environment variable)",
         "Basic API service class created",
-        "Can make test API call to OpenRouter"
+        "Can make test API call to OpenRouter",
+        "Test API call succeeds with valid response"
       ]
     },
     {
-      "id": "setup-06",
+      "id": "setup-05",
       "title": "Configure Environment Variables",
       "description": "Set up environment variable management for API keys, database credentials, and other configuration. Ensure secure handling of sensitive data.",
       "phase": 1,
-      "dependencies": ["setup-02", "setup-05"],
+      "dependencies": [
+        "setup-01",
+        "setup-04"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
         "Environment variables configured for all services",
         "No hardcoded secrets in code",
-        "Environment setup documented"
+        "Environment setup documented",
+        "Environment variable loading tested"
+      ]
+    },
+    {
+      "id": "setup-06",
+      "title": "Configure Serverpod for Production Deployment",
+      "description": "Configure Serverpod backend for production deployment to Digital Ocean. Set up production environment variables, configure server settings, and prepare deployment configuration files.",
+      "phase": 1,
+      "dependencies": [
+        "setup-01",
+        "setup-05"
+      ],
+      "status": "pending",
+      "acceptanceCriteria": [
+        "Production configuration files created",
+        "Environment variables configured for production",
+        "Deployment configuration documented",
+        "Production build configuration tested"
+      ]
+    },
+    {
+      "id": "setup-07",
+      "title": "Set Up Database Backup Strategy",
+      "description": "Configure automated database backups for PostgreSQL on Digital Ocean. Set up daily backups, configure backup retention policy (7 days for MVP), and test backup restoration process.",
+      "phase": 1,
+      "dependencies": [
+        "setup-02"
+      ],
+      "status": "pending",
+      "acceptanceCriteria": [
+        "Automated daily backups configured",
+        "Backup retention policy set (7 days minimum)",
+        "Backup restoration process tested",
+        "Backup strategy documented",
+        "Backup verification process in place"
+      ]
+    },
+    {
+      "id": "setup-08",
+      "title": "Set Up CI/CD Pipeline",
+      "description": "Configure CI/CD pipeline for automated testing and deployment. Set up GitHub Actions (or similar) to run tests on pull requests, build and test on merge to main, and optionally deploy to staging. Configure pipeline for both backend and frontend.",
+      "phase": 1,
+      "dependencies": [
+        "setup-01"
+      ],
+      "status": "pending",
+      "acceptanceCriteria": [
+        "CI/CD pipeline configured (GitHub Actions or similar)",
+        "Pipeline runs tests on pull requests",
+        "Pipeline builds and tests on merge to main",
+        "Backend tests run in CI pipeline",
+        "Frontend tests run in CI pipeline",
+        "Pipeline configuration documented",
+        "CI/CD pipeline tested and verified"
       ]
     },
     {
@@ -95,12 +148,16 @@
       "title": "Create Question Serverpod Model",
       "description": "Create Question model in Serverpod with fields: id, text, createdAt, status (pending, processing, completed, failed). Run code generation and create database migration.",
       "phase": 2,
-      "dependencies": ["setup-04"],
+      "dependencies": [
+        "setup-03"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
         "Question model created with all required fields",
         "Database migration generated and applied",
-        "Model accessible from Serverpod endpoints"
+        "Model accessible from Serverpod endpoints",
+        "Model serialization/deserialization tested",
+        "Database schema matches model definition"
       ]
     },
     {
@@ -108,209 +165,518 @@
       "title": "Create Philosopher Serverpod Model",
       "description": "Create Philosopher model with fields: id, name, tradition, description, systemPrompt, avatar, color. Run code generation and create database migration.",
       "phase": 2,
-      "dependencies": ["setup-04"],
+      "dependencies": [
+        "setup-03"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
         "Philosopher model created with all required fields",
         "Database migration generated and applied",
-        "Model accessible from Serverpod endpoints"
+        "Model accessible from Serverpod endpoints",
+        "Model serialization/deserialization tested",
+        "Database schema matches model definition"
       ]
     },
     {
       "id": "backend-03",
       "title": "Create Debate Serverpod Model",
-      "description": "Create Debate model with fields: id, questionId, philosopherIds (list), arguments (list), status, createdAt, completedAt, rounds, totalTokens. Run code generation and create database migration.",
+      "description": "Create Debate model with fields: id, questionId, philosopherIds (list), status (pending, generating, completed, failed), createdAt, completedAt, rounds (fixed at 3), totalTokens, maxTokenBudget. Run code generation and create database migration.",
       "phase": 2,
-      "dependencies": ["backend-01", "backend-02"],
+      "dependencies": [
+        "backend-01",
+        "backend-02"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
         "Debate model created with all required fields and relationships",
         "Database migration generated and applied",
-        "Model accessible from Serverpod endpoints"
+        "Model accessible from Serverpod endpoints",
+        "Model serialization/deserialization tested",
+        "Database schema matches model definition"
       ]
     },
     {
       "id": "backend-04",
       "title": "Create Argument Serverpod Model",
-      "description": "Create Argument model with fields: id, debateId, philosopherId, philosopherName, round, content, timestamp, order. Run code generation and create database migration.",
+      "description": "Create Argument model with fields: id, debateId, philosopherId, philosopherName, round, content, timestamp, order, tokenCount. Run code generation and create database migration.",
       "phase": 2,
-      "dependencies": ["backend-02", "backend-03"],
+      "dependencies": [
+        "backend-02",
+        "backend-03"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
         "Argument model created with all required fields",
         "Database migration generated and applied",
-        "Model accessible from Serverpod endpoints"
+        "Model accessible from Serverpod endpoints",
+        "Model serialization/deserialization tested",
+        "Database schema matches model definition"
       ]
     },
     {
       "id": "backend-05",
       "title": "Create Initial Philosopher Data (2 Philosophers)",
-      "description": "Create system prompts and data for 2 philosophers. Choose contrasting styles (e.g., Socrates vs Marcus Aurelius, or Nietzsche vs Kant). Include name, tradition, description, systemPrompt, avatar, and color for each.",
+      "description": "Create system prompts and data for 2 philosophers: Socrates (Classical Greek, Socratic method, questioning approach) and Marcus Aurelius (Stoic, meditative, practical wisdom). Include name, tradition, description, systemPrompt, avatar, and color for each. Ensure contrasting argumentation styles for engaging debates.",
       "phase": 2,
-      "dependencies": ["backend-02"],
+      "dependencies": [
+        "backend-02"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
-        "2 philosophers created with complete system prompts",
+        "2 philosophers created: Socrates and Marcus Aurelius",
+        "Socrates has Socratic method system prompt (questioning, dialectic)",
+        "Marcus Aurelius has Stoic system prompt (meditative, practical wisdom)",
         "Philosophers have distinct personalities and styles",
-        "Philosopher data seeded in database"
+        "Philosopher data seeded in database",
+        "Philosopher data can be retrieved via endpoint",
+        "System prompts tested for appropriate length and clarity (500-1000 words each)"
       ]
     },
     {
       "id": "backend-06",
       "title": "Implement Philosopher List Endpoint",
-      "description": "Create listPhilosophers() method endpoint to list all available philosophers. Return philosopher details including name, tradition, description, avatar, and color.",
+      "description": "Create listPhilosophers() method endpoint to list all available philosophers. Return philosopher details including name, tradition, description, avatar, and color. Note: getPhilosopher(int id) endpoint is out of scope for MVP as listPhilosophers() returns all philosopher details needed.",
       "phase": 2,
-      "dependencies": ["backend-02", "backend-05"],
+      "dependencies": [
+        "backend-02",
+        "backend-05"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
         "Endpoint returns list of all philosophers",
         "Response includes all required philosopher fields",
-        "Endpoint tested and working"
+        "Endpoint tested and working",
+        "Unit tests pass for endpoint",
+        "Error handling tested for edge cases"
       ]
     },
     {
       "id": "backend-07",
       "title": "Implement Question Submission Endpoint",
-      "description": "Create submitQuestion(String text) method endpoint to submit new questions. Validate question (length 10-500 chars), create Question record, and return Question object.",
+      "description": "Create submitQuestion(String text) method endpoint to submit new questions. Validate question (length 10-500 chars), sanitize input to prevent XSS, create Question record with pending status, and return Question object.",
       "phase": 2,
-      "dependencies": ["backend-01"],
+      "dependencies": [
+        "backend-01"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
-        "Endpoint accepts question text and validates length",
+        "Endpoint accepts question text and validates length (10-500 chars)",
+        "Input sanitized to prevent XSS attacks",
         "Question saved to database with pending status",
         "Returns Question object with id",
-        "Error handling for invalid inputs"
+        "Error handling for invalid inputs (length, null, empty)",
+        "Unit tests pass for validation and sanitization",
+        "Error messages are user-friendly"
       ]
     },
     {
       "id": "backend-08",
-      "title": "Implement Get Question Endpoint",
-      "description": "Create getQuestion(int id) method endpoint to retrieve question details by ID.",
+      "title": "Implement Question Status Management",
+      "description": "Implement question status transitions: pending \u2192 processing (when debate starts) \u2192 completed (when debate completes) \u2192 failed (on errors). Update question status throughout debate lifecycle.",
       "phase": 2,
-      "dependencies": ["backend-01"],
+      "dependencies": [
+        "backend-01",
+        "backend-16"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
-        "Endpoint returns question by ID",
-        "Handles non-existent questions gracefully",
-        "Endpoint tested and working"
+        "Question status updated to processing when debate starts",
+        "Question status updated to completed when debate completes successfully",
+        "Question status updated to failed on errors",
+        "Status transitions are atomic and consistent",
+        "Status updates are logged for debugging",
+        "Unit tests verify all status transitions"
       ]
     },
     {
       "id": "backend-09",
-      "title": "Implement OpenRouter Streaming Service",
-      "description": "Create service class to handle OpenRouter API streaming calls. Implement token streaming, parse SSE responses, and handle connection errors. Support for system prompts and conversation context.",
+      "title": "Implement Get Question Endpoint",
+      "description": "Create getQuestion(int id) method endpoint to retrieve question details by ID.",
       "phase": 2,
-      "dependencies": ["setup-05"],
+      "dependencies": [
+        "backend-01"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
-        "Service can make streaming API calls to OpenRouter",
-        "Can parse and handle streaming responses",
-        "Error handling and retry logic implemented",
-        "Supports system prompts and conversation context"
+        "Endpoint returns question by ID",
+        "Handles non-existent questions gracefully",
+        "Endpoint tested and working",
+        "Unit tests pass for valid and invalid IDs",
+        "Error messages are user-friendly"
       ]
     },
     {
       "id": "backend-10",
-      "title": "Implement Debate Generation Logic",
-      "description": "Create core logic for generating debates. Implement sequential turn-based generation where philosophers alternate, each responding to previous arguments. Support multiple rounds (3-4 rounds). Maintain conversation context for each philosopher.",
+      "title": "Implement OpenRouter Streaming Service",
+      "description": "Create service class to handle OpenRouter API streaming calls. Implement token streaming, parse SSE responses, handle connection errors, and retry logic (max 2 retries). Support for system prompts and conversation context.",
       "phase": 2,
-      "dependencies": ["backend-09", "backend-03", "backend-04", "backend-05"],
+      "dependencies": [
+        "setup-04"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
-        "Debate generation follows sequential turn-based format",
-        "Each philosopher responds to previous arguments",
-        "Supports configurable number of rounds",
-        "Maintains character consistency through system prompts",
-        "Arguments meet length constraints (100-500 tokens)"
+        "Service can make streaming API calls to OpenRouter",
+        "Can parse and handle streaming responses",
+        "Retry logic implemented (max 2 retries for failed calls)",
+        "Error handling for connection failures and API errors",
+        "Supports system prompts and conversation context",
+        "Unit tests pass for streaming, retry logic, and error handling",
+        "Connection errors are logged for debugging"
       ]
     },
     {
       "id": "backend-11",
-      "title": "Implement Start Debate Endpoint",
-      "description": "Create startDebate(int questionId, List<int> philosopherIds) method endpoint. Accepts questionId and philosopherIds (2 philosophers selected by user), creates Debate record, and initiates debate generation.",
+      "title": "Implement Core Debate Generation Logic",
+      "description": "Create core logic for generating debates with fixed 3 rounds. Implement sequential turn-based generation where philosophers alternate, each responding to previous arguments. Each round has 2 turns (one per philosopher). Maintain conversation context for each philosopher. Validate argument length (minimum 100 tokens, maximum 500 tokens per argument) to ensure substantive responses.",
       "phase": 2,
-      "dependencies": ["backend-03", "backend-10"],
+      "dependencies": [
+        "backend-10",
+        "backend-03",
+        "backend-04",
+        "backend-05"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
-        "Endpoint creates Debate record with correct questionId",
-        "Accepts philosopherIds list from client (2 philosophers selected by user)",
-        "Initiates debate generation process",
-        "Returns Debate object with id"
+        "Debate generation follows sequential turn-based format",
+        "Exactly 3 rounds are generated (6 total arguments: 2 philosophers \u00d7 3 rounds)",
+        "Each philosopher responds to previous arguments",
+        "Round numbering is correct (1, 2, 3)",
+        "Turn order alternates correctly between philosophers",
+        "Argument length validation enforced (minimum 100 tokens, maximum 500 tokens per argument)",
+        "Arguments that exceed limits are handled appropriately (truncate or regenerate)",
+        "Unit tests verify turn order and round completion",
+        "Unit tests verify argument length validation",
+        "Debate completes after exactly 3 rounds"
       ]
     },
     {
       "id": "backend-12",
-      "title": "Implement Real-time Streaming Endpoint (SSE/WebSocket)",
-      "description": "Create streamDebate(int id) method endpoint using Serverpod native streaming (SSE). Stream Argument objects as they are generated in real-time. Handle connection drops and resume if possible.",
+      "title": "Implement Debate Context Management",
+      "description": "Implement conversation context management for each philosopher. Build context from previous arguments, maintain character consistency through system prompts, and pass full conversation history to AI generation. Content quality (substantive, non-generic arguments) is ensured through carefully crafted system prompts that define each philosopher's argumentation style and expectations.",
       "phase": 2,
-      "dependencies": ["backend-10", "backend-11"],
+      "dependencies": [
+        "backend-11"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
-        "Endpoint streams arguments as they are generated",
-        "Uses Serverpod streaming capabilities (SSE or WebSocket)",
-        "Handles connection drops gracefully",
-        "Streams Argument objects with all required fields"
+        "Each philosopher maintains conversation context",
+        "Context includes all previous arguments in order",
+        "System prompts are correctly applied to each philosopher",
+        "Character consistency maintained through context",
+        "System prompts ensure substantive, non-generic arguments",
+        "Context building tested for multi-round debates",
+        "Context size is optimized to prevent token overflow"
       ]
     },
     {
       "id": "backend-13",
-      "title": "Implement Get Debate Endpoint",
-      "description": "Create getDebate(int id) method endpoint to retrieve debate details including all arguments.",
+      "title": "Implement Error Recovery and Retry Logic",
+      "description": "Implement error recovery and retry logic for debate generation. Retry failed OpenRouter API calls (max 2 retries), handle debate generation failures, mark debates as failed if retries exhausted, and cleanup partial data on failure. Support user-initiated retry for failed debates.",
       "phase": 2,
-      "dependencies": ["backend-03"],
+      "dependencies": [
+        "backend-11",
+        "backend-12"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
-        "Endpoint returns debate by ID with all arguments",
-        "Handles non-existent debates gracefully",
-        "Endpoint tested and working"
+        "Retry logic implemented for failed API calls (max 2 retries)",
+        "Failed debates marked as failed status",
+        "Partial data cleaned up on failure",
+        "Error messages logged with context",
+        "User can retry failed debates via retryDebate endpoint",
+        "Retry logic prevents infinite loops",
+        "Unit tests verify retry behavior and error handling"
       ]
     },
     {
       "id": "backend-14",
+      "title": "Implement Token Counting and Budget Tracking",
+      "description": "Implement token counting for each argument and total token tracking per debate. Count tokens for each argument during generation, aggregate total tokens per debate, update Debate.totalTokens field, enforce maximum token budget per debate (default: 5000 tokens), and log token usage for monitoring.",
+      "phase": 2,
+      "dependencies": [
+        "backend-11",
+        "backend-04"
+      ],
+      "status": "pending",
+      "acceptanceCriteria": [
+        "Tokens counted accurately for each argument",
+        "Argument.tokenCount field populated",
+        "Debate.totalTokens updated after each argument",
+        "Maximum token budget enforced per debate (default: 5000 tokens, configurable via environment variable)",
+        "Debate generation aborts if token budget exceeded",
+        "Token usage logged for monitoring",
+        "Unit tests verify token counting accuracy",
+        "Token budget validation tested"
+      ]
+    },
+    {
+      "id": "backend-15",
+      "title": "Implement Debate Generation Timeout",
+      "description": "Implement timeout handling for debate generation. Set 5-minute timeout for entire debate generation, abort generation if timeout exceeded, mark debate as failed with timeout error, and cleanup resources.",
+      "phase": 2,
+      "dependencies": [
+        "backend-11"
+      ],
+      "status": "pending",
+      "acceptanceCriteria": [
+        "5-minute timeout enforced for debate generation",
+        "Debate marked as failed if timeout exceeded",
+        "Resources cleaned up on timeout",
+        "Timeout error logged with context",
+        "Timeout does not affect in-progress arguments",
+        "Unit tests verify timeout behavior"
+      ]
+    },
+    {
+      "id": "backend-16",
+      "title": "Implement Start Debate Endpoint",
+      "description": "Create startDebate(int questionId, List<int> philosopherIds) method endpoint. Accepts questionId and philosopherIds (2 philosophers selected by user), validates inputs, creates Debate record with pending status, sets rounds to 3, configures maxTokenBudget (default: 5000 tokens, configurable via environment variable), updates question status to processing, and initiates debate generation asynchronously.",
+      "phase": 2,
+      "dependencies": [
+        "backend-03",
+        "backend-11",
+        "backend-08"
+      ],
+      "status": "pending",
+      "acceptanceCriteria": [
+        "Endpoint creates Debate record with correct questionId",
+        "Accepts philosopherIds list from client (exactly 2 philosophers)",
+        "Validates exactly 2 philosophers are provided",
+        "Debate created with rounds set to 3",
+        "Debate created with maxTokenBudget configured (default: 5000 tokens)",
+        "Question status updated to processing",
+        "Initiates debate generation process asynchronously",
+        "Returns Debate object with id",
+        "Error handling for invalid inputs",
+        "Unit tests pass for validation and initialization"
+      ]
+    },
+    {
+      "id": "backend-17",
+      "title": "Implement Real-time Streaming Endpoint (SSE)",
+      "description": "Create streamDebate(int id) method endpoint using Serverpod native streaming (SSE). Stream Argument objects as they are generated in real-time. Handle connection drops gracefully with automatic reconnection within 3 seconds, resume from last received argument, and handle partial argument recovery.",
+      "phase": 2,
+      "dependencies": [
+        "backend-11",
+        "backend-16"
+      ],
+      "status": "pending",
+      "acceptanceCriteria": [
+        "Endpoint streams arguments as they are generated",
+        "Uses Serverpod streaming capabilities (SSE)",
+        "Streams Argument objects with all required fields",
+        "Connection drops detected automatically",
+        "Automatic reconnection within 3 seconds",
+        "Resume from last received argument works correctly",
+        "Partial argument recovery handled",
+        "Connection events logged for debugging",
+        "Unit tests verify streaming and reconnection behavior"
+      ]
+    },
+    {
+      "id": "backend-18",
+      "title": "Implement Get Debate Endpoint",
+      "description": "Create getDebate(int id) method endpoint to retrieve debate details including all arguments, ordered by round and order.",
+      "phase": 2,
+      "dependencies": [
+        "backend-03"
+      ],
+      "status": "pending",
+      "acceptanceCriteria": [
+        "Endpoint returns debate by ID with all arguments",
+        "Arguments ordered correctly by round and order",
+        "Handles non-existent debates gracefully",
+        "Endpoint tested and working",
+        "Unit tests pass for valid and invalid IDs",
+        "Performance optimized with database indexes"
+      ]
+    },
+    {
+      "id": "backend-19",
       "title": "Implement Rate Limiting",
       "description": "Add basic rate limiting to prevent API abuse. Configure limits appropriate for demo purposes (5-10 concurrent debates).",
       "phase": 2,
-      "dependencies": ["backend-11"],
+      "dependencies": [
+        "backend-16"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
         "Rate limiting implemented for question submission",
         "Rate limiting implemented for debate generation",
-        "Limits configured for demo scale",
-        "Proper error messages for rate limit exceeded"
+        "Limits configured for demo scale (5-10 concurrent debates)",
+        "Proper error messages for rate limit exceeded",
+        "Rate limit headers returned in responses",
+        "Unit tests verify rate limiting behavior"
+      ]
+    },
+    {
+      "id": "backend-20",
+      "title": "Add Database Indexes",
+      "description": "Add database indexes for performance optimization. Index Question.createdAt for chronological queries, Debate.questionId and Debate.status for lookups, Argument.debateId and Argument.order for debate retrieval, and Argument.round for filtering.",
+      "phase": 2,
+      "dependencies": [
+        "backend-01",
+        "backend-03",
+        "backend-04"
+      ],
+      "status": "pending",
+      "acceptanceCriteria": [
+        "Index on Question.createdAt created",
+        "Indexes on Debate.questionId and Debate.status created",
+        "Indexes on Argument.debateId, Argument.order, and Argument.round created",
+        "Database migrations generated and applied",
+        "Query performance improved (measured)",
+        "Index usage verified in query plans"
+      ]
+    },
+    {
+      "id": "backend-21",
+      "title": "Implement Debate Status Management",
+      "description": "Implement debate status transitions: pending \u2192 generating (when generation starts) \u2192 completed (when all rounds complete) \u2192 failed (on errors or timeout). Update debate status throughout generation lifecycle, set completedAt timestamp on completion, and handle state transitions in error scenarios.",
+      "phase": 2,
+      "dependencies": [
+        "backend-03",
+        "backend-11",
+        "backend-16"
+      ],
+      "status": "pending",
+      "acceptanceCriteria": [
+        "Debate status updated to generating when generation starts",
+        "Debate status updated to completed when all 3 rounds complete",
+        "Debate status updated to failed on errors or timeout",
+        "completedAt timestamp set on successful completion",
+        "Status transitions are atomic and consistent",
+        "Status updates are logged for debugging",
+        "Unit tests verify all status transitions"
+      ]
+    },
+    {
+      "id": "backend-22",
+      "title": "Implement Retry Debate Endpoint",
+      "description": "Create retryDebate(int debateId) method endpoint to allow users to retry failed debates. Validates debate status is failed, resets debate state, and initiates new debate generation.",
+      "phase": 2,
+      "dependencies": [
+        "backend-16",
+        "backend-21"
+      ],
+      "status": "pending",
+      "acceptanceCriteria": [
+        "Endpoint validates debate status is failed",
+        "Debate state reset correctly",
+        "New debate generation initiated",
+        "Returns updated Debate object",
+        "Error handling for invalid debate IDs or statuses",
+        "Unit tests verify retry functionality"
+      ]
+    },
+    {
+      "id": "backend-23",
+      "title": "Implement Backend Unit Tests",
+      "description": "Create comprehensive unit tests for backend logic. Test debate generation logic, status transitions, token counting, error handling, retry logic, and endpoint validation.",
+      "phase": 2,
+      "dependencies": [
+        "backend-11",
+        "backend-13",
+        "backend-14",
+        "backend-21"
+      ],
+      "status": "pending",
+      "acceptanceCriteria": [
+        "Unit tests for debate generation logic (turn order, rounds)",
+        "Unit tests for status transitions",
+        "Unit tests for token counting and budget enforcement",
+        "Unit tests for error handling and retry logic",
+        "Unit tests for endpoint validation",
+        "Test coverage > 80% for core logic",
+        "All unit tests pass"
+      ]
+    },
+    {
+      "id": "backend-24",
+      "title": "Implement Backend Integration Tests",
+      "description": "Create integration tests for backend endpoints and database interactions. Test complete debate generation flow, API endpoint integration, database operations, and error scenarios.",
+      "phase": 2,
+      "dependencies": [
+        "backend-16",
+        "backend-17",
+        "backend-18",
+        "backend-22"
+      ],
+      "status": "pending",
+      "acceptanceCriteria": [
+        "Integration tests for complete debate generation flow",
+        "Integration tests for all API endpoints",
+        "Integration tests for database operations",
+        "Integration tests for error scenarios",
+        "Integration tests for streaming functionality",
+        "All integration tests pass",
+        "Test database configured and isolated"
+      ]
+    },
+    {
+      "id": "backend-25",
+      "title": "Implement Health Check Endpoint",
+      "description": "Create health check endpoint (/health) for monitoring and deployment verification. Return server status, database connectivity status, and basic system information. Used by deployment systems and monitoring tools.",
+      "phase": 2,
+      "dependencies": [
+        "setup-03"
+      ],
+      "status": "pending",
+      "acceptanceCriteria": [
+        "Health check endpoint returns 200 OK when healthy",
+        "Endpoint checks database connectivity",
+        "Endpoint returns server status information",
+        "Endpoint responds quickly (< 100ms)",
+        "Health check tested and verified",
+        "Endpoint documented for deployment use"
       ]
     },
     {
       "id": "frontend-01",
       "title": "Set Up State Management",
-      "description": "Choose and configure state management solution (Provider, Riverpod, or Bloc). Set up basic state management structure for question submission and debate viewing.",
+      "description": "Configure Riverpod as the state management solution. Set up Riverpod providers for question submission, debate viewing, philosopher data, and streaming state. Create provider structure following Riverpod best practices.",
       "phase": 3,
-      "dependencies": ["setup-01"],
+      "dependencies": [
+        "setup-01"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
-        "State management solution chosen and configured",
+        "Riverpod package added to Flutter app dependencies",
+        "Riverpod providers configured for app state",
+        "Providers created for question submission state",
+        "Providers created for debate viewing state",
+        "Providers created for philosopher data",
+        "Providers created for streaming state",
         "Basic state management structure in place",
-        "Can manage app state for questions and debates"
+        "Can manage app state for questions and debates",
+        "State management tested with unit tests"
       ]
     },
     {
       "id": "frontend-02",
       "title": "Set Up Serverpod Client in Flutter",
-      "description": "Configure Serverpod client in Flutter app. Set up connection to backend, configure client for API calls and streaming.",
+      "description": "Configure Serverpod client in the generated Flutter app. The client package is already part of the Serverpod project structure. Set up connection to backend, configure client for API calls and streaming.",
       "phase": 3,
-      "dependencies": ["setup-01", "setup-02"],
+      "dependencies": [
+        "setup-01"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
         "Serverpod client configured and connected to backend",
         "Can make API calls from Flutter app",
-        "Streaming connection configured"
+        "Streaming connection configured",
+        "Client configuration tested"
       ]
     },
     {
-      "id": "frontend-02a",
+      "id": "frontend-03",
       "title": "Test Serverpod Integration",
       "description": "Create and run integration tests to verify Serverpod client connectivity and functionality. Test basic API calls (GET/POST), data serialization/deserialization, error handling (connection failures, invalid responses), and streaming connection if available. Verify client configuration is correct and backend is accessible from Flutter app.",
       "phase": 3,
-      "dependencies": ["frontend-02", "backend-06"],
+      "dependencies": [
+        "frontend-02",
+        "backend-06"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
         "Integration tests verify Serverpod client can connect to backend",
@@ -323,11 +689,39 @@
       ]
     },
     {
-      "id": "frontend-03",
+      "id": "frontend-04",
+      "title": "Test Serverpod Streaming Integration",
+      "description": "Create comprehensive tests for Serverpod native streaming (SSE) functionality. Test SSE connection establishment, real-time token streaming, connection drop detection, automatic reconnection within 3 seconds, resume from last received argument, partial data recovery, and error handling for streaming failures. Verify streaming works correctly before implementing UI streaming features.",
+      "phase": 3,
+      "dependencies": [
+        "frontend-03",
+        "backend-17"
+      ],
+      "status": "pending",
+      "acceptanceCriteria": [
+        "SSE connection can be established successfully",
+        "Real-time token streaming works correctly",
+        "Connection drops are detected automatically",
+        "Automatic reconnection works within 3 seconds",
+        "Resume from last received argument works correctly",
+        "Partial data recovery handled gracefully",
+        "Error handling for streaming failures tested",
+        "Streaming integration tests pass",
+        "Streaming latency verified (< 500ms)"
+      ]
+    },
+    {
+      "id": "frontend-05",
       "title": "Create Question Input Screen",
       "description": "Build home screen with app title/logo, brief description, question input form (text field with validation), philosopher selection (select 2 philosophers from available options), submit button, and loading indicator. Validate question length (10-500 chars) and ensure exactly 2 philosophers are selected.",
       "phase": 3,
-      "dependencies": ["frontend-01", "frontend-02", "frontend-05", "frontend-12"],
+      "dependencies": [
+        "frontend-01",
+        "frontend-02",
+        "frontend-07",
+        "frontend-14",
+        "frontend-15"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
         "Question input screen matches design requirements",
@@ -337,158 +731,304 @@
         "Submit button enabled only when question is valid and 2 philosophers selected",
         "Submit button triggers question submission",
         "Loading indicator shows during processing",
-        "Error handling for invalid inputs"
+        "Error handling for invalid inputs",
+        "UI follows accessibility best practices (detailed testing in frontend-13a)",
+        "Widget tests pass for input screen"
       ]
     },
     {
-      "id": "frontend-04",
+      "id": "frontend-06",
       "title": "Implement Question Submission Service",
       "description": "Create service class to handle question submission via Serverpod client. Call submitQuestion() method and handle responses/errors.",
       "phase": 3,
-      "dependencies": ["frontend-02", "frontend-02a", "backend-07"],
+      "dependencies": [
+        "frontend-02",
+        "frontend-03",
+        "backend-07"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
         "Service can submit questions to backend",
         "Handles success and error responses",
-        "Returns Question object on success"
+        "Returns Question object on success",
+        "Error handling tested with unit tests",
+        "Network error handling works correctly"
       ]
     },
     {
-      "id": "frontend-05",
+      "id": "frontend-07",
       "title": "Create Philosopher Card/Widget Component",
       "description": "Create reusable widget for displaying philosopher information. Include philosopher name, avatar/icon, tradition badge/chip, and color scheme. Make it visually distinct.",
       "phase": 3,
-      "dependencies": ["frontend-01"],
+      "dependencies": [
+        "frontend-01",
+        "frontend-15"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
         "Philosopher card component created and reusable",
         "Displays all required philosopher information",
         "Visual design distinguishes each philosopher",
-        "Responsive and accessible"
+        "Responsive and accessible",
+        "Widget tests pass for philosopher card"
       ]
     },
     {
-      "id": "frontend-06",
+      "id": "frontend-08",
       "title": "Create Argument Card/Widget Component",
       "description": "Create widget for displaying individual arguments. Include philosopher card, argument text (with streaming text animation support), and timestamp. Style based on philosopher color.",
       "phase": 3,
-      "dependencies": ["frontend-05"],
+      "dependencies": [
+        "frontend-07"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
         "Argument card component created",
         "Displays philosopher info, argument text, and timestamp",
         "Supports streaming text animation",
-        "Styled with philosopher's color scheme"
+        "Styled with philosopher's color scheme",
+        "Widget tests pass for argument card"
       ]
     },
     {
-      "id": "frontend-07",
+      "id": "frontend-09",
       "title": "Create Debate View Screen Layout",
       "description": "Build debate view screen with question display at top (sticky header), scrollable debate timeline/thread view, and argument cards. Include 'New Question' button.",
       "phase": 3,
-      "dependencies": ["frontend-06"],
+      "dependencies": [
+        "frontend-08"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
         "Debate view screen layout matches design",
         "Question displayed at top (sticky)",
         "Scrollable timeline for arguments",
-        "'New Question' button functional"
-      ]
-    },
-    {
-      "id": "frontend-08",
-      "title": "Implement Real-time Streaming UI Updates",
-      "description": "Implement real-time updates to debate view as arguments stream in. Update UI as tokens arrive, show streaming text animation, and handle connection state.",
-      "phase": 3,
-      "dependencies": ["frontend-07", "frontend-02", "frontend-02a", "backend-12"],
-      "status": "pending",
-      "acceptanceCriteria": [
-        "UI updates in real-time as arguments stream",
-        "Streaming text animation works smoothly",
-        "Handles connection drops gracefully",
-        "Updates appear without lag (< 500ms latency)"
-      ]
-    },
-    {
-      "id": "frontend-09",
-      "title": "Implement Auto-scroll to Latest Argument",
-      "description": "Add auto-scroll functionality to debate view. Automatically scroll to latest argument as new arguments arrive, with option to disable if user scrolls up.",
-      "phase": 3,
-      "dependencies": ["frontend-07", "frontend-08"],
-      "status": "pending",
-      "acceptanceCriteria": [
-        "Auto-scrolls to latest argument when new arguments arrive",
-        "Respects user scroll position (pauses if user scrolls up)",
-        "Smooth scrolling animation"
+        "'New Question' button functional",
+        "Screen tested for responsive design",
+        "Widget tests pass for debate view layout"
       ]
     },
     {
       "id": "frontend-10",
-      "title": "Implement Loading/Thinking Indicators",
-      "description": "Add visual indicators when philosophers are generating responses. Show 'thinking' state for each philosopher when they are generating their next argument.",
+      "title": "Implement Real-time Streaming UI Updates",
+      "description": "Implement real-time updates to debate view as arguments stream in. Update UI as tokens arrive, show streaming text animation, handle connection state, receive and display streaming errors from backend, and provide user-facing error messages with retry option.",
       "phase": 3,
-      "dependencies": ["frontend-07", "frontend-08"],
+      "dependencies": [
+        "frontend-09",
+        "frontend-02",
+        "frontend-03",
+        "frontend-04",
+        "backend-17"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
-        "Loading indicators show when philosophers are thinking",
-        "Indicators are visually distinct per philosopher",
-        "Indicators disappear when argument starts streaming"
+        "UI updates in real-time as arguments stream",
+        "Streaming text animation works smoothly",
+        "Connection drops detected and handled gracefully",
+        "Automatic reconnection attempted within 3 seconds",
+        "Resume from last received argument works",
+        "Error events from stream displayed to user",
+        "User-facing error messages are clear and actionable",
+        "Retry mechanism available for failed streams",
+        "Updates appear without lag (< 500ms latency)",
+        "Streaming functionality tested with integration tests"
       ]
     },
     {
       "id": "frontend-11",
+      "title": "Implement Auto-scroll to Latest Argument",
+      "description": "Add auto-scroll functionality to debate view. Automatically scroll to latest argument as new arguments arrive, with option to disable if user scrolls up.",
+      "phase": 3,
+      "dependencies": [
+        "frontend-09",
+        "frontend-10"
+      ],
+      "status": "pending",
+      "acceptanceCriteria": [
+        "Auto-scrolls to latest argument when new arguments arrive",
+        "Respects user scroll position (pauses if user scrolls up)",
+        "Smooth scrolling animation",
+        "Auto-scroll behavior tested with widget tests"
+      ]
+    },
+    {
+      "id": "frontend-12",
+      "title": "Implement Loading/Thinking Indicators",
+      "description": "Add visual indicators when philosophers are generating responses. Show 'thinking' state for each philosopher when they are generating their next argument.",
+      "phase": 3,
+      "dependencies": [
+        "frontend-09",
+        "frontend-10"
+      ],
+      "status": "pending",
+      "acceptanceCriteria": [
+        "Loading indicators show when philosophers are thinking",
+        "Indicators are visually distinct per philosopher",
+        "Indicators disappear when argument starts streaming",
+        "Thinking indicators tested with widget tests"
+      ]
+    },
+    {
+      "id": "frontend-13",
       "title": "Implement Debate Navigation Flow",
       "description": "Connect question submission to debate viewing. After question submission, automatically start debate using startDebate() with questionId and selected philosopherIds (2 philosophers), then navigate to debate view. Handle debate initialization and streaming start.",
       "phase": 3,
-      "dependencies": ["frontend-03", "frontend-04", "frontend-07", "backend-11"],
+      "dependencies": [
+        "frontend-05",
+        "frontend-06",
+        "frontend-09",
+        "backend-16"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
         "Question submission triggers debate start with selected philosopherIds",
         "startDebate() called with correct questionId and philosopherIds",
         "Navigation to debate view works",
         "Debate streaming starts automatically",
-        "Error handling for failed debate start"
-      ]
-    },
-    {
-      "id": "frontend-12",
-      "title": "Implement Philosopher List Loading",
-      "description": "Load and display available philosophers. Call listPhilosophers() method and store philosopher data for use in question submission screen and debate view.",
-      "phase": 3,
-      "dependencies": ["frontend-02", "frontend-02a", "backend-06"],
-      "status": "pending",
-      "acceptanceCriteria": [
-        "Philosopher list loaded from backend",
-        "Philosopher data stored in state",
-        "Data available for debate view"
-      ]
-    },
-    {
-      "id": "frontend-13",
-      "title": "Apply Design System and Styling",
-      "description": "Apply color scheme (classical/thoughtful palette), typography (readable serif or sans-serif), and ensure responsive design works on mobile, tablet, and desktop.",
-      "phase": 3,
-      "dependencies": ["frontend-03", "frontend-07"],
-      "status": "pending",
-      "acceptanceCriteria": [
-        "Color scheme applied consistently",
-        "Typography readable and appropriate",
-        "Responsive design works on all screen sizes",
-        "WCAG 2.1 AA accessibility compliance"
+        "Error handling for failed debate start",
+        "Navigation flow tested with integration tests"
       ]
     },
     {
       "id": "frontend-14",
+      "title": "Implement Philosopher List Loading",
+      "description": "Load and display available philosophers. Call listPhilosophers() method and store philosopher data for use in question submission screen and debate view.",
+      "phase": 3,
+      "dependencies": [
+        "frontend-02",
+        "frontend-03",
+        "backend-06"
+      ],
+      "status": "pending",
+      "acceptanceCriteria": [
+        "Philosopher list loaded from backend",
+        "Philosopher data stored in state",
+        "Data available for debate view",
+        "Error handling for failed philosopher list load",
+        "Philosopher loading tested with unit tests"
+      ]
+    },
+    {
+      "id": "frontend-15",
+      "title": "Configure Material Design 3 Theme",
+      "description": "Set up Material Design 3 (M3) theme configuration for the Flutter app. Configure color scheme (primary: #1E3A5F, secondary: #6B7280, accent: #D4AF37, etc.), typography scale (displayLarge, headlineMedium, bodyLarge, etc.), spacing system (4dp grid), and component styling. Create theme data matching wireframe specifications. Ensure theme is applied globally throughout the app.",
+      "phase": 3,
+      "dependencies": [
+        "frontend-01"
+      ],
+      "status": "pending",
+      "acceptanceCriteria": [
+        "Material Design 3 theme configured with useMaterial3: true",
+        "Color scheme matches wireframe specifications",
+        "Typography scale configured (displayLarge through labelSmall)",
+        "Spacing system implemented (4dp grid: space4, space8, space16, etc.)",
+        "Component styling configured (buttons, cards, text fields)",
+        "Theme applied globally via ThemeData",
+        "Theme tested and verified across app",
+        "Theme configuration documented"
+      ]
+    },
+    {
+      "id": "frontend-16",
+      "title": "Apply Design System and Styling",
+      "description": "Apply color scheme (classical/thoughtful palette), typography (readable serif or sans-serif), and ensure responsive design works on mobile, tablet, and desktop. Use the Material Design 3 theme configured in frontend-12a.",
+      "phase": 3,
+      "dependencies": [
+        "frontend-05",
+        "frontend-09",
+        "frontend-15"
+      ],
+      "status": "pending",
+      "acceptanceCriteria": [
+        "Color scheme applied consistently using M3 theme",
+        "Typography readable and appropriate using M3 text theme",
+        "Responsive design works on all screen sizes",
+        "WCAG 2.1 AA accessibility compliance",
+        "Color contrast meets accessibility standards",
+        "Design system tested across different screen sizes"
+      ]
+    },
+    {
+      "id": "frontend-17",
+      "title": "Implement Accessibility Features",
+      "description": "Implement comprehensive accessibility features to meet WCAG 2.1 AA compliance. Add semantic labels for screen readers, implement focus indicators (2px solid primary color), ensure minimum touch target sizes (44px \u00d7 44px), add descriptive text for philosopher cards, implement status announcements for debate updates, and verify color contrast ratios (4.5:1 for text, 3:1 for interactive elements).",
+      "phase": 3,
+      "dependencies": [
+        "frontend-16"
+      ],
+      "status": "pending",
+      "acceptanceCriteria": [
+        "Semantic labels added for all interactive elements",
+        "Focus indicators visible on all focusable elements (2px solid primary)",
+        "All touch targets meet minimum 44px \u00d7 44px size",
+        "Descriptive text provided for philosopher cards",
+        "Status announcements implemented for debate updates",
+        "Color contrast ratios verified (4.5:1 text, 3:1 interactive)",
+        "Screen reader tested and working correctly",
+        "Keyboard navigation works throughout app",
+        "Accessibility features tested with automated tools",
+        "WCAG 2.1 AA compliance verified"
+      ]
+    },
+    {
+      "id": "frontend-18",
       "title": "Cross-platform Testing (Web, Mobile)",
       "description": "Test Flutter app on web and at least one mobile platform (iOS or Android). Verify all features work correctly, UI is responsive, and streaming works on all platforms.",
       "phase": 3,
-      "dependencies": ["frontend-11", "frontend-13"],
+      "dependencies": [
+        "frontend-13",
+        "frontend-16",
+        "frontend-17"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
         "App tested on web platform",
         "App tested on mobile platform (iOS or Android)",
         "All features work on both platforms",
-        "UI responsive and functional on all platforms"
+        "UI responsive and functional on all platforms",
+        "Streaming works correctly on all platforms",
+        "Platform-specific issues documented and resolved"
+      ]
+    },
+    {
+      "id": "frontend-19",
+      "title": "Implement Error Handling UI for Failed Debates",
+      "description": "Implement UI to display failed debate states. Show error messages for failed debates, provide retry button that calls retryDebate endpoint, and handle retry errors gracefully.",
+      "phase": 3,
+      "dependencies": [
+        "frontend-09",
+        "frontend-13",
+        "backend-22"
+      ],
+      "status": "pending",
+      "acceptanceCriteria": [
+        "Failed debate state displayed with clear error message",
+        "Retry button available for failed debates",
+        "retryDebate() called correctly on retry",
+        "Error handling for retry failures",
+        "Loading state shown during retry",
+        "Error UI tested with widget tests"
+      ]
+    },
+    {
+      "id": "frontend-20",
+      "title": "Implement Frontend Unit Tests",
+      "description": "Create comprehensive unit tests for frontend services and state management. Test question submission service, debate service, philosopher loading, error handling, and state management logic.",
+      "phase": 3,
+      "dependencies": [
+        "frontend-06",
+        "frontend-13",
+        "frontend-14"
+      ],
+      "status": "pending",
+      "acceptanceCriteria": [
+        "Unit tests for question submission service",
+        "Unit tests for debate service and streaming",
+        "Unit tests for philosopher loading",
+        "Unit tests for error handling",
+        "Unit tests for state management logic",
+        "Test coverage > 80% for services",
+        "All unit tests pass"
       ]
     },
     {
@@ -496,85 +1036,264 @@
       "title": "End-to-End Integration Testing",
       "description": "Test complete flow from question submission through debate generation and streaming. Verify frontend-backend communication, streaming works end-to-end, and data persistence.",
       "phase": 4,
-      "dependencies": ["frontend-11", "backend-12"],
+      "dependencies": [
+        "frontend-13",
+        "backend-17",
+        "backend-18"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
         "Complete flow tested end-to-end",
         "Question submission works",
         "Debate generation works",
         "Real-time streaming works",
-        "Data persists correctly in database"
+        "Data persists correctly in database",
+        "All 3 rounds complete successfully",
+        "End-to-end tests pass"
       ]
     },
     {
       "id": "integration-02",
-      "title": "Implement Comprehensive Error Handling",
-      "description": "Add error handling throughout the application. Handle API errors, network failures, streaming connection drops, invalid inputs, and edge cases. Provide user-friendly error messages.",
+      "title": "API Contract Verification",
+      "description": "Verify all frontend service calls match backend endpoints. Verify data serialization/deserialization works correctly, and document API contracts.",
       "phase": 4,
-      "dependencies": ["frontend-11", "backend-12"],
+      "dependencies": [
+        "frontend-13",
+        "backend-18"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
-        "Error handling for all API calls",
-        "Network failure handling",
-        "Streaming error recovery",
-        "User-friendly error messages",
-        "Graceful degradation"
+        "All frontend service calls match backend endpoints",
+        "Data serialization/deserialization verified",
+        "API contracts documented",
+        "Type safety verified between client and server",
+        "Contract verification tests pass"
       ]
     },
     {
       "id": "integration-03",
-      "title": "UI/UX Polish and Animations",
-      "description": "Polish UI/UX with smooth animations, transitions, and visual feedback. Ensure professional appearance suitable for demo presentation.",
+      "title": "Generate API Documentation",
+      "description": "Generate and maintain API documentation for all backend endpoints. Document endpoint signatures, request/response formats, error codes, and usage examples. Use Serverpod's built-in documentation or generate OpenAPI/Swagger documentation if available.",
       "phase": 4,
-      "dependencies": ["frontend-13"],
+      "dependencies": [
+        "backend-18",
+        "backend-25"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
-        "Smooth animations and transitions",
-        "Visual feedback for user actions",
-        "Professional appearance",
-        "Consistent design language"
+        "API documentation generated for all endpoints",
+        "Endpoint signatures documented",
+        "Request/response formats documented",
+        "Error codes and messages documented",
+        "Usage examples provided",
+        "API documentation accessible and up-to-date",
+        "Documentation format follows standard conventions"
       ]
     },
     {
       "id": "integration-04",
-      "title": "Performance Optimization",
-      "description": "Optimize app performance. Ensure question submission < 2 seconds, first argument streams within 5-10 seconds, streaming latency < 500ms, and app load < 3 seconds.",
+      "title": "Implement Comprehensive Error Handling",
+      "description": "Add comprehensive error handling throughout the application. Handle API errors, network failures, streaming connection drops, invalid inputs, edge cases, and provide user-friendly error messages. Focus on edge cases and scenarios not covered in individual feature tasks.",
       "phase": 4,
-      "dependencies": ["integration-01"],
+      "dependencies": [
+        "frontend-13",
+        "backend-17",
+        "frontend-19"
+      ],
+      "status": "pending",
+      "acceptanceCriteria": [
+        "Error handling for all API calls (edge cases)",
+        "Network failure handling (comprehensive scenarios)",
+        "Streaming error recovery (edge cases)",
+        "User-friendly error messages throughout app",
+        "Graceful degradation in all error scenarios",
+        "Error handling tested with comprehensive test suite",
+        "Error scenarios documented"
+      ]
+    },
+    {
+      "id": "integration-05",
+      "title": "UI/UX Polish and Animations",
+      "description": "Polish UI/UX with smooth animations, transitions, and visual feedback. Ensure professional appearance suitable for demo presentation. All animations complete within 300ms.",
+      "phase": 4,
+      "dependencies": [
+        "frontend-16"
+      ],
+      "status": "pending",
+      "acceptanceCriteria": [
+        "Smooth animations and transitions",
+        "All animations complete within 300ms",
+        "Visual feedback for user actions",
+        "Professional appearance",
+        "Consistent design language",
+        "Color contrast meets WCAG 2.1 AA standards",
+        "Animations tested for performance"
+      ]
+    },
+    {
+      "id": "integration-06",
+      "title": "Implement Performance Monitoring",
+      "description": "Set up performance monitoring and metrics collection before optimization. Implement performance tracking for API response times, database query times, streaming latency, and frontend render times. Create dashboards or logging for performance metrics.",
+      "phase": 4,
+      "dependencies": [
+        "integration-01",
+        "backend-20"
+      ],
+      "status": "pending",
+      "acceptanceCriteria": [
+        "Performance monitoring implemented for API calls",
+        "Database query performance tracked",
+        "Streaming latency monitored",
+        "Frontend render performance tracked",
+        "Performance metrics logged and accessible",
+        "Baseline performance metrics documented",
+        "Monitoring tools configured and tested"
+      ]
+    },
+    {
+      "id": "integration-07",
+      "title": "Performance Optimization",
+      "description": "Optimize app performance based on monitoring data. Ensure question submission < 2 seconds, first argument streams within 5-10 seconds, streaming latency < 500ms, and app load < 3 seconds. Leverage database indexes and query optimization.",
+      "phase": 4,
+      "dependencies": [
+        "integration-06",
+        "backend-20"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
         "Question submission response time < 2 seconds",
         "First argument streams within 5-10 seconds",
         "Streaming latency < 500ms",
-        "App load time < 3 seconds"
+        "App load time < 3 seconds",
+        "Database queries optimized using indexes",
+        "Performance improvements measured and documented",
+        "Performance targets met in testing",
+        "Before/after performance metrics compared"
       ]
     },
     {
-      "id": "integration-05",
+      "id": "integration-08",
       "title": "Add Logging and Monitoring",
-      "description": "Implement logging for debugging and monitoring. Log API calls, errors, debate generation progress, and performance metrics.",
+      "description": "Implement logging for debugging and monitoring. Log API calls, errors, debate generation progress, performance metrics, and token usage. Set up structured logging with appropriate log levels.",
       "phase": 4,
-      "dependencies": ["backend-12", "frontend-11"],
+      "dependencies": [
+        "backend-17",
+        "frontend-13",
+        "backend-14"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
         "Logging implemented for key operations",
-        "Error logging in place",
+        "Error logging in place with context",
         "Performance metrics logged",
-        "Logs useful for debugging"
+        "Token usage logged per debate",
+        "Debate generation progress logged",
+        "Structured logging format implemented",
+        "Log levels configured appropriately (DEBUG, INFO, WARN, ERROR)",
+        "Logs useful for debugging",
+        "Logging tested and verified"
       ]
     },
     {
-      "id": "integration-06",
+      "id": "integration-09",
+      "title": "Set Up Monitoring and Alerting",
+      "description": "Configure monitoring and alerting for production environment. Set up alerts for error rates, performance degradation, database connection issues, and API failures. Configure monitoring dashboards for key metrics.",
+      "phase": 4,
+      "dependencies": [
+        "integration-08",
+        "integration-11"
+      ],
+      "status": "pending",
+      "acceptanceCriteria": [
+        "Monitoring system configured (e.g., Digital Ocean monitoring, or external service)",
+        "Alerts configured for high error rates",
+        "Alerts configured for performance degradation",
+        "Alerts configured for database connection issues",
+        "Alerts configured for API failures",
+        "Monitoring dashboards created for key metrics",
+        "Alert notifications tested and verified",
+        "Monitoring documentation created"
+      ]
+    },
+    {
+      "id": "integration-10",
       "title": "Demo Preparation and Testing",
       "description": "Prepare for demo presentation. Test all features thoroughly, prepare demo questions, verify everything works smoothly, and create demo script if needed.",
       "phase": 4,
-      "dependencies": ["integration-01", "integration-02", "integration-03", "integration-04"],
+      "dependencies": [
+        "integration-01",
+        "integration-04",
+        "integration-05",
+        "integration-07"
+      ],
       "status": "pending",
       "acceptanceCriteria": [
         "All features tested and working",
         "Demo questions prepared",
         "Smooth demo flow verified",
+        "Demo script created (if needed)",
         "Ready for presentation"
+      ]
+    },
+    {
+      "id": "integration-11",
+      "title": "Deploy Backend to Digital Ocean",
+      "description": "Deploy Serverpod backend to Digital Ocean. Configure production environment, set up database connections, configure environment variables, and verify deployment is accessible.",
+      "phase": 4,
+      "dependencies": [
+        "setup-06",
+        "integration-01",
+        "backend-25"
+      ],
+      "status": "pending",
+      "acceptanceCriteria": [
+        "Backend deployed to Digital Ocean",
+        "Production environment configured correctly",
+        "Database connection working in production",
+        "Environment variables configured securely",
+        "Backend accessible and responding",
+        "Health check endpoint verified in production",
+        "Deployment verified with health checks"
+      ]
+    },
+    {
+      "id": "integration-12",
+      "title": "Production Environment Testing",
+      "description": "Test application in production environment. Verify all features work in production, test streaming functionality, verify database operations, and test error handling in production.",
+      "phase": 4,
+      "dependencies": [
+        "integration-11"
+      ],
+      "status": "pending",
+      "acceptanceCriteria": [
+        "All features tested in production environment",
+        "Streaming functionality works in production",
+        "Database operations verified in production",
+        "Error handling tested in production",
+        "Performance meets targets in production",
+        "Production environment ready for demo"
+      ]
+    },
+    {
+      "id": "integration-13",
+      "title": "Final Production Readiness Check",
+      "description": "Perform final production readiness check before demo. Verify all systems operational, review monitoring dashboards, confirm backup strategy is active, verify CI/CD pipeline is working, and ensure all documentation is complete.",
+      "phase": 4,
+      "dependencies": [
+        "integration-12",
+        "integration-09",
+        "setup-07",
+        "setup-08"
+      ],
+      "status": "pending",
+      "acceptanceCriteria": [
+        "All systems verified operational",
+        "Monitoring dashboards reviewed and functional",
+        "Backup strategy confirmed active",
+        "CI/CD pipeline verified working",
+        "All documentation complete and up-to-date",
+        "Production readiness checklist completed",
+        "System ready for demo presentation"
       ]
     }
   ]
