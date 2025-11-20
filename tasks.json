@@ -12,13 +12,14 @@
     {
       "id": "setup-01",
       "title": "Initialize Flutter Project",
-      "description": "Create new Flutter project with cross-platform support (Web, iOS, Android, Desktop). Set up basic project structure, dependencies, and configuration files.",
+      "description": "Create new Flutter project in the 'app' folder with cross-platform support (Web, iOS, Android, Desktop). Use package name 'com.itsgg.agora' and app name 'Agora'. Set up basic project structure, dependencies, and configuration files.",
       "phase": 1,
       "dependencies": [],
       "status": "pending",
-      "estimatedEffort": "4 hours",
       "acceptanceCriteria": [
-        "Flutter project created and runs on at least one platform",
+        "Flutter project created in 'app' folder and runs on at least one platform",
+        "Package name set to 'com.itsgg.agora'",
+        "App name set to 'Agora'",
         "Project structure follows Flutter best practices",
         "Basic dependencies configured"
       ]
@@ -26,13 +27,15 @@
     {
       "id": "setup-02",
       "title": "Initialize Serverpod Backend Project",
-      "description": "Create Serverpod backend project structure. Configure Serverpod framework, set up basic endpoint structure, and configure development server.",
+      "description": "Create Serverpod backend project structure in the 'backend' folder. Run 'serverpod create agora' (or similar), then reorganize the generated structure: move server to 'backend' folder, update package names in pubspec.yaml files (server, client, and Flutter app) to use 'com.itsgg.agora' format, and set app name to 'Agora'. Configure Serverpod framework, set up basic endpoint structure, and configure development server.",
       "phase": 1,
       "dependencies": [],
       "status": "pending",
-      "estimatedEffort": "4 hours",
       "acceptanceCriteria": [
-        "Serverpod project created and runs locally",
+        "Serverpod project created and reorganized into 'backend' folder structure",
+        "Package names configured as 'com.itsgg.agora' in server, client, and Flutter app pubspec.yaml files",
+        "App name set to 'Agora' in Flutter app configuration",
+        "Serverpod project runs locally",
         "Basic endpoint structure in place",
         "Serverpod code generation working"
       ]
@@ -44,7 +47,6 @@
       "phase": 1,
       "dependencies": [],
       "status": "completed",
-      "estimatedEffort": "2 hours",
       "acceptanceCriteria": [
         "PostgreSQL database created and accessible",
         "Connection credentials secured",
@@ -58,7 +60,6 @@
       "phase": 1,
       "dependencies": ["setup-02", "setup-03"],
       "status": "pending",
-      "estimatedEffort": "2 hours",
       "acceptanceCriteria": [
         "Serverpod can connect to PostgreSQL database",
         "Database connection tested and verified",
@@ -72,7 +73,6 @@
       "phase": 1,
       "dependencies": ["setup-02"],
       "status": "pending",
-      "estimatedEffort": "3 hours",
       "acceptanceCriteria": [
         "OpenRouter API key configured securely (environment variable)",
         "Basic API service class created",
@@ -86,7 +86,6 @@
       "phase": 1,
       "dependencies": ["setup-02", "setup-05"],
       "status": "pending",
-      "estimatedEffort": "1 hour",
       "acceptanceCriteria": [
         "Environment variables configured for all services",
         "No hardcoded secrets in code",
@@ -100,7 +99,6 @@
       "phase": 2,
       "dependencies": ["setup-04"],
       "status": "pending",
-      "estimatedEffort": "2 hours",
       "acceptanceCriteria": [
         "Question model created with all required fields",
         "Database migration generated and applied",
@@ -114,7 +112,6 @@
       "phase": 2,
       "dependencies": ["setup-04"],
       "status": "pending",
-      "estimatedEffort": "2 hours",
       "acceptanceCriteria": [
         "Philosopher model created with all required fields",
         "Database migration generated and applied",
@@ -128,7 +125,6 @@
       "phase": 2,
       "dependencies": ["backend-01", "backend-02"],
       "status": "pending",
-      "estimatedEffort": "2 hours",
       "acceptanceCriteria": [
         "Debate model created with all required fields and relationships",
         "Database migration generated and applied",
@@ -142,7 +138,6 @@
       "phase": 2,
       "dependencies": ["backend-02", "backend-03"],
       "status": "pending",
-      "estimatedEffort": "2 hours",
       "acceptanceCriteria": [
         "Argument model created with all required fields",
         "Database migration generated and applied",
@@ -156,7 +151,6 @@
       "phase": 2,
       "dependencies": ["backend-02"],
       "status": "pending",
-      "estimatedEffort": "4 hours",
       "acceptanceCriteria": [
         "2 philosophers created with complete system prompts",
         "Philosophers have distinct personalities and styles",
@@ -166,11 +160,10 @@
     {
       "id": "backend-06",
       "title": "Implement Philosopher List Endpoint",
-      "description": "Create GET /philosopher endpoint to list all available philosophers. Return philosopher details including name, tradition, description, avatar, and color.",
+      "description": "Create listPhilosophers() method endpoint to list all available philosophers. Return philosopher details including name, tradition, description, avatar, and color.",
       "phase": 2,
       "dependencies": ["backend-02", "backend-05"],
       "status": "pending",
-      "estimatedEffort": "1 hour",
       "acceptanceCriteria": [
         "Endpoint returns list of all philosophers",
         "Response includes all required philosopher fields",
@@ -180,11 +173,10 @@
     {
       "id": "backend-07",
       "title": "Implement Question Submission Endpoint",
-      "description": "Create POST /question endpoint to submit new questions. Validate question (length 10-500 chars), create Question record, and return Question object.",
+      "description": "Create submitQuestion(String text) method endpoint to submit new questions. Validate question (length 10-500 chars), create Question record, and return Question object.",
       "phase": 2,
       "dependencies": ["backend-01"],
       "status": "pending",
-      "estimatedEffort": "2 hours",
       "acceptanceCriteria": [
         "Endpoint accepts question text and validates length",
         "Question saved to database with pending status",
@@ -195,11 +187,10 @@
     {
       "id": "backend-08",
       "title": "Implement Get Question Endpoint",
-      "description": "Create GET /question/:id endpoint to retrieve question details by ID.",
+      "description": "Create getQuestion(int id) method endpoint to retrieve question details by ID.",
       "phase": 2,
       "dependencies": ["backend-01"],
       "status": "pending",
-      "estimatedEffort": "1 hour",
       "acceptanceCriteria": [
         "Endpoint returns question by ID",
         "Handles non-existent questions gracefully",
@@ -213,7 +204,6 @@
       "phase": 2,
       "dependencies": ["setup-05"],
       "status": "pending",
-      "estimatedEffort": "6 hours",
       "acceptanceCriteria": [
         "Service can make streaming API calls to OpenRouter",
         "Can parse and handle streaming responses",
@@ -228,7 +218,6 @@
       "phase": 2,
       "dependencies": ["backend-09", "backend-03", "backend-04", "backend-05"],
       "status": "pending",
-      "estimatedEffort": "8 hours",
       "acceptanceCriteria": [
         "Debate generation follows sequential turn-based format",
         "Each philosopher responds to previous arguments",
@@ -240,14 +229,13 @@
     {
       "id": "backend-11",
       "title": "Implement Start Debate Endpoint",
-      "description": "Create POST /debate/start endpoint. Accepts questionId, creates Debate record, selects philosophers (default 2), and initiates debate generation.",
+      "description": "Create startDebate(int questionId, List<int> philosopherIds) method endpoint. Accepts questionId and philosopherIds (2 philosophers selected by user), creates Debate record, and initiates debate generation.",
       "phase": 2,
       "dependencies": ["backend-03", "backend-10"],
       "status": "pending",
-      "estimatedEffort": "3 hours",
       "acceptanceCriteria": [
         "Endpoint creates Debate record with correct questionId",
-        "Selects 2 philosophers (configurable)",
+        "Accepts philosopherIds list from client (2 philosophers selected by user)",
         "Initiates debate generation process",
         "Returns Debate object with id"
       ]
@@ -255,11 +243,10 @@
     {
       "id": "backend-12",
       "title": "Implement Real-time Streaming Endpoint (SSE/WebSocket)",
-      "description": "Create GET /debate/:id/stream endpoint using Serverpod streaming (SSE or WebSocket). Stream Argument objects as they are generated in real-time. Handle connection drops and resume if possible.",
+      "description": "Create streamDebate(int id) method endpoint using Serverpod native streaming (SSE). Stream Argument objects as they are generated in real-time. Handle connection drops and resume if possible.",
       "phase": 2,
       "dependencies": ["backend-10", "backend-11"],
       "status": "pending",
-      "estimatedEffort": "6 hours",
       "acceptanceCriteria": [
         "Endpoint streams arguments as they are generated",
         "Uses Serverpod streaming capabilities (SSE or WebSocket)",
@@ -270,11 +257,10 @@
     {
       "id": "backend-13",
       "title": "Implement Get Debate Endpoint",
-      "description": "Create GET /debate/:id endpoint to retrieve debate details including all arguments.",
+      "description": "Create getDebate(int id) method endpoint to retrieve debate details including all arguments.",
       "phase": 2,
       "dependencies": ["backend-03"],
       "status": "pending",
-      "estimatedEffort": "1 hour",
       "acceptanceCriteria": [
         "Endpoint returns debate by ID with all arguments",
         "Handles non-existent debates gracefully",
@@ -288,7 +274,6 @@
       "phase": 2,
       "dependencies": ["backend-11"],
       "status": "pending",
-      "estimatedEffort": "2 hours",
       "acceptanceCriteria": [
         "Rate limiting implemented for question submission",
         "Rate limiting implemented for debate generation",
@@ -303,7 +288,6 @@
       "phase": 3,
       "dependencies": ["setup-01"],
       "status": "pending",
-      "estimatedEffort": "3 hours",
       "acceptanceCriteria": [
         "State management solution chosen and configured",
         "Basic state management structure in place",
@@ -317,7 +301,6 @@
       "phase": 3,
       "dependencies": ["setup-01", "setup-02"],
       "status": "pending",
-      "estimatedEffort": "2 hours",
       "acceptanceCriteria": [
         "Serverpod client configured and connected to backend",
         "Can make API calls from Flutter app",
@@ -331,28 +314,29 @@
       "phase": 3,
       "dependencies": ["frontend-02", "backend-06"],
       "status": "pending",
-      "estimatedEffort": "3 hours",
       "acceptanceCriteria": [
         "Integration tests verify Serverpod client can connect to backend",
-        "GET endpoint calls work correctly (e.g., philosopher list)",
+        "Method calls work correctly (e.g., listPhilosophers())",
         "Data models serialize/deserialize correctly",
         "Error handling works for connection failures",
         "Error handling works for invalid responses",
-        "Streaming connection tested (if streaming endpoint available)",
+        "Streaming connection tested (if streaming method available)",
         "All tests pass and integration is verified"
       ]
     },
     {
       "id": "frontend-03",
       "title": "Create Question Input Screen",
-      "description": "Build home screen with app title/logo, brief description, question input form (text field with validation), submit button, and loading indicator. Validate question length (10-500 chars).",
+      "description": "Build home screen with app title/logo, brief description, question input form (text field with validation), philosopher selection (select 2 philosophers from available options), submit button, and loading indicator. Validate question length (10-500 chars) and ensure exactly 2 philosophers are selected.",
       "phase": 3,
-      "dependencies": ["frontend-01", "frontend-02"],
+      "dependencies": ["frontend-01", "frontend-02", "frontend-05", "frontend-12"],
       "status": "pending",
-      "estimatedEffort": "4 hours",
       "acceptanceCriteria": [
         "Question input screen matches design requirements",
+        "Philosopher selection integrated on question submission screen",
+        "Users can select exactly 2 philosophers from available options",
         "Input validation works (length, content)",
+        "Submit button enabled only when question is valid and 2 philosophers selected",
         "Submit button triggers question submission",
         "Loading indicator shows during processing",
         "Error handling for invalid inputs"
@@ -361,11 +345,10 @@
     {
       "id": "frontend-04",
       "title": "Implement Question Submission Service",
-      "description": "Create service class to handle question submission via Serverpod client. Call POST /question endpoint and handle responses/errors.",
+      "description": "Create service class to handle question submission via Serverpod client. Call submitQuestion() method and handle responses/errors.",
       "phase": 3,
       "dependencies": ["frontend-02", "frontend-02a", "backend-07"],
       "status": "pending",
-      "estimatedEffort": "2 hours",
       "acceptanceCriteria": [
         "Service can submit questions to backend",
         "Handles success and error responses",
@@ -379,7 +362,6 @@
       "phase": 3,
       "dependencies": ["frontend-01"],
       "status": "pending",
-      "estimatedEffort": "3 hours",
       "acceptanceCriteria": [
         "Philosopher card component created and reusable",
         "Displays all required philosopher information",
@@ -394,7 +376,6 @@
       "phase": 3,
       "dependencies": ["frontend-05"],
       "status": "pending",
-      "estimatedEffort": "4 hours",
       "acceptanceCriteria": [
         "Argument card component created",
         "Displays philosopher info, argument text, and timestamp",
@@ -409,7 +390,6 @@
       "phase": 3,
       "dependencies": ["frontend-06"],
       "status": "pending",
-      "estimatedEffort": "4 hours",
       "acceptanceCriteria": [
         "Debate view screen layout matches design",
         "Question displayed at top (sticky)",
@@ -424,7 +404,6 @@
       "phase": 3,
       "dependencies": ["frontend-07", "frontend-02", "frontend-02a", "backend-12"],
       "status": "pending",
-      "estimatedEffort": "6 hours",
       "acceptanceCriteria": [
         "UI updates in real-time as arguments stream",
         "Streaming text animation works smoothly",
@@ -439,7 +418,6 @@
       "phase": 3,
       "dependencies": ["frontend-07", "frontend-08"],
       "status": "pending",
-      "estimatedEffort": "2 hours",
       "acceptanceCriteria": [
         "Auto-scrolls to latest argument when new arguments arrive",
         "Respects user scroll position (pauses if user scrolls up)",
@@ -453,7 +431,6 @@
       "phase": 3,
       "dependencies": ["frontend-07", "frontend-08"],
       "status": "pending",
-      "estimatedEffort": "2 hours",
       "acceptanceCriteria": [
         "Loading indicators show when philosophers are thinking",
         "Indicators are visually distinct per philosopher",
@@ -463,13 +440,13 @@
     {
       "id": "frontend-11",
       "title": "Implement Debate Navigation Flow",
-      "description": "Connect question submission to debate viewing. After question submission, automatically start debate and navigate to debate view. Handle debate initialization and streaming start.",
+      "description": "Connect question submission to debate viewing. After question submission, automatically start debate using startDebate() with questionId and selected philosopherIds (2 philosophers), then navigate to debate view. Handle debate initialization and streaming start.",
       "phase": 3,
       "dependencies": ["frontend-03", "frontend-04", "frontend-07", "backend-11"],
       "status": "pending",
-      "estimatedEffort": "3 hours",
       "acceptanceCriteria": [
-        "Question submission triggers debate start",
+        "Question submission triggers debate start with selected philosopherIds",
+        "startDebate() called with correct questionId and philosopherIds",
         "Navigation to debate view works",
         "Debate streaming starts automatically",
         "Error handling for failed debate start"
@@ -478,11 +455,10 @@
     {
       "id": "frontend-12",
       "title": "Implement Philosopher List Loading",
-      "description": "Load and display available philosophers. Call GET /philosopher endpoint and store philosopher data for use in debate view.",
+      "description": "Load and display available philosophers. Call listPhilosophers() method and store philosopher data for use in question submission screen and debate view.",
       "phase": 3,
       "dependencies": ["frontend-02", "frontend-02a", "backend-06"],
       "status": "pending",
-      "estimatedEffort": "2 hours",
       "acceptanceCriteria": [
         "Philosopher list loaded from backend",
         "Philosopher data stored in state",
@@ -496,7 +472,6 @@
       "phase": 3,
       "dependencies": ["frontend-03", "frontend-07"],
       "status": "pending",
-      "estimatedEffort": "4 hours",
       "acceptanceCriteria": [
         "Color scheme applied consistently",
         "Typography readable and appropriate",
@@ -511,7 +486,6 @@
       "phase": 3,
       "dependencies": ["frontend-11", "frontend-13"],
       "status": "pending",
-      "estimatedEffort": "4 hours",
       "acceptanceCriteria": [
         "App tested on web platform",
         "App tested on mobile platform (iOS or Android)",
@@ -526,7 +500,6 @@
       "phase": 4,
       "dependencies": ["frontend-11", "backend-12"],
       "status": "pending",
-      "estimatedEffort": "6 hours",
       "acceptanceCriteria": [
         "Complete flow tested end-to-end",
         "Question submission works",
@@ -542,7 +515,6 @@
       "phase": 4,
       "dependencies": ["frontend-11", "backend-12"],
       "status": "pending",
-      "estimatedEffort": "4 hours",
       "acceptanceCriteria": [
         "Error handling for all API calls",
         "Network failure handling",
@@ -558,7 +530,6 @@
       "phase": 4,
       "dependencies": ["frontend-13"],
       "status": "pending",
-      "estimatedEffort": "6 hours",
       "acceptanceCriteria": [
         "Smooth animations and transitions",
         "Visual feedback for user actions",
@@ -573,7 +544,6 @@
       "phase": 4,
       "dependencies": ["integration-01"],
       "status": "pending",
-      "estimatedEffort": "4 hours",
       "acceptanceCriteria": [
         "Question submission response time < 2 seconds",
         "First argument streams within 5-10 seconds",
@@ -588,7 +558,6 @@
       "phase": 4,
       "dependencies": ["backend-12", "frontend-11"],
       "status": "pending",
-      "estimatedEffort": "3 hours",
       "acceptanceCriteria": [
         "Logging implemented for key operations",
         "Error logging in place",
@@ -603,7 +572,6 @@
       "phase": 4,
       "dependencies": ["integration-01", "integration-02", "integration-03", "integration-04"],
       "status": "pending",
-      "estimatedEffort": "4 hours",
       "acceptanceCriteria": [
         "All features tested and working",
         "Demo questions prepared",
