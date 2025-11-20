@@ -46,7 +46,7 @@
       "description": "Set up PostgreSQL database instance on Digital Ocean. Create database, configure connection settings, and set up basic security.",
       "phase": 1,
       "dependencies": [],
-      "status": "completed",
+      "status": "pending",
       "acceptanceCriteria": [
         "PostgreSQL database created and accessible",
         "Connection credentials secured",
